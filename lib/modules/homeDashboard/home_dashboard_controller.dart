@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_two_view.dart';
+import 'package:west_irbid_mobile/modules/diwan/diwan_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 
 class HomeDashboardController extends GetxController {
@@ -29,6 +30,11 @@ class HomeDashboardController extends GetxController {
   // Navigate to category page 2
   void navigateToCategoryTwo() {
     Get.to(() => const CategoryTwoView());
+  }
+
+  // Navigate to Diwan view
+  void navigateToDiwan() {
+    Get.to(() => const DiwanView());
   }
 
   @override

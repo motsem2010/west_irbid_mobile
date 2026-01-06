@@ -168,6 +168,15 @@ class HomeDashboardView extends StatelessWidget {
                       color: const Color(0xFF10B981),
                       onTap: controller.navigateToCategoryTwo,
                     ),
+
+                    // Diwan Button
+                    _buildCategoryCard(
+                      title: 'الديوان',
+                      subtitle: 'إدارة سجلات الديوان',
+                      icon: Icons.archive_outlined,
+                      color: const Color(0xFFEF4444),
+                      onTap: controller.navigateToDiwan,
+                    ),
                   ],
                 ),
 
