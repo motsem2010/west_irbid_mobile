@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:west_irbid_mobile/models/diwan.dart';
 import 'package:west_irbid_mobile/models/diwan_classes.dart';
+import 'package:west_irbid_mobile/models/result_object.dart';
 import 'package:west_irbid_mobile/modules/diwan/diwan_controller.dart';
+import 'package:west_irbid_mobile/modules/diwan_details/diwan_details_binding.dart';
+import 'package:west_irbid_mobile/modules/diwan_details/diwan_details_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
 import 'package:west_irbid_mobile/widgets/custom_text_field.dart';
@@ -378,332 +381,347 @@ class DiwanView extends StatelessWidget {
   }
 
   Widget _buildDiwanCard(DiwanController controller, Diwan diwan, int index) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 3,
-      shadowColor: Colors.black.withOpacity(0.1),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: diwan.isDeleted == true
-              ? LinearGradient(
-                  colors: [Colors.red[50]!, Colors.red[100]!],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-          color: diwan.isDeleted != true ? Colors.white : null,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with gradient background
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    ConstantsData.primaryClr,
-                    ConstantsData.primaryClr.withOpacity(0.8),
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      // ID Badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          '#${diwan.id}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontFamily: 'janna',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      // Classification Name
-                      Expanded(
-                        child: Text(
-                          diwan.diwanClasificationName ?? 'غير محدد',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontFamily: 'janna',
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                      // Attachment Icon
-                      if (diwan.attachment != null &&
-                          diwan.attachment!.isNotEmpty &&
-                          diwan.attachment != 'error')
-                        IconButton(
-                          onPressed: () =>
-                              controller.openAttachment(Get.context!, diwan),
-                          icon: const Icon(
-                            Icons.attach_file_rounded,
-                            color: Colors.white,
-                          ),
-                          tooltip: 'عرض المرفق',
-                        ),
+    return InkWell(
+      onTap: () async {
+        var result = await Get.to(
+          () => DiwanDetailsView(
+            diwan_id: diwan.id,
+            diwanObj: diwan,
+            diwan_action: true,
+          ),
+          binding: DiwanDetailsBinding(),
+        );
+        if (result != null && result is ResultObject) {
+          controller.loadDiwanData(Get.context!);
+        }
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        elevation: 3,
+        shadowColor: Colors.black.withOpacity(0.1),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: diwan.isDeleted == true
+                ? LinearGradient(
+                    colors: [Colors.red[50]!, Colors.red[100]!],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
+            color: diwan.isDeleted != true ? Colors.white : null,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with gradient background
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      ConstantsData.primaryClr,
+                      ConstantsData.primaryClr.withOpacity(0.8),
                     ],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
                   ),
-                  if (diwan.serialNumber != null) ...[
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.numbers,
-                            size: 14,
-                            color: ConstantsData.primaryClr,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        // ID Badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'رقم متسلسل: ${diwan.serialNumber}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: ConstantsData.primaryClr,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            '#${diwan.id}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                               fontFamily: 'janna',
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-
-            // Body Content
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Details Grid
-                  if (diwan.departmentName != null ||
-                      diwan.diwanSourceFromTo != null)
-                    Column(
-                      children: [
-                        if (diwan.departmentName != null)
-                          _buildDetailRow(
-                            icon: Icons.business_rounded,
-                            label: 'القسم',
-                            value: diwan.departmentName!,
-                            color: const Color(0xFFF59E0B),
+                        ),
+                        const SizedBox(width: 12),
+                        // Classification Name
+                        Expanded(
+                          child: Text(
+                            diwan.diwanClasificationName ?? 'غير محدد',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'janna',
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
-                        if (diwan.diwanSourceFromTo != null)
-                          _buildDetailRow(
-                            icon: Icons.swap_horiz_rounded,
-                            label: 'من/إلى',
-                            value: diwan.diwanSourceFromTo!,
-                            color: const Color(0xFF10B981),
+                        ),
+                        // Attachment Icon
+                        if (diwan.attachment != null &&
+                            diwan.attachment!.isNotEmpty &&
+                            diwan.attachment != 'error')
+                          IconButton(
+                            onPressed: () =>
+                                controller.openAttachment(Get.context!, diwan),
+                            icon: const Icon(
+                              Icons.attach_file_rounded,
+                              color: Colors.white,
+                            ),
+                            tooltip: 'عرض المرفق',
                           ),
                       ],
                     ),
-
-                  // Summary Section (if exists)
-                  if (diwan.summary != null) ...[
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.blue.shade100,
-                          width: 1,
+                    if (diwan.serialNumber != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.numbers,
+                              size: 14,
+                              color: ConstantsData.primaryClr,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'رقم متسلسل: ${diwan.serialNumber}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: ConstantsData.primaryClr,
+                                fontFamily: 'janna',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    ],
+                  ],
+                ),
+              ),
+
+              // Body Content
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Details Grid
+                    if (diwan.departmentName != null ||
+                        diwan.diwanSourceFromTo != null)
+                      Column(
                         children: [
-                          Icon(
-                            Icons.description_rounded,
-                            size: 18,
-                            color: Colors.blue.shade700,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'الملخص',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue.shade700,
-                                    fontFamily: 'janna',
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  diwan.summary!,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey.shade700,
-                                    height: 1.4,
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                          if (diwan.departmentName != null)
+                            _buildDetailRow(
+                              icon: Icons.business_rounded,
+                              label: 'القسم',
+                              value: diwan.departmentName!,
+                              color: const Color(0xFFF59E0B),
                             ),
-                          ),
+                          if (diwan.diwanSourceFromTo != null)
+                            _buildDetailRow(
+                              icon: Icons.swap_horiz_rounded,
+                              label: 'من/إلى',
+                              value: diwan.diwanSourceFromTo!,
+                              color: const Color(0xFF10B981),
+                            ),
                         ],
                       ),
-                    ),
-                  ],
 
-                  // Trasol Badge
-                  if (diwan.trasol != null) ...[
-                    const SizedBox(height: 8),
+                    // Summary Section (if exists)
+                    if (diwan.summary != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.blue.shade100,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.description_rounded,
+                              size: 18,
+                              color: Colors.blue.shade700,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'الملخص',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue.shade700,
+                                      fontFamily: 'janna',
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    diwan.summary!,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade700,
+                                      height: 1.4,
+                                    ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    // Trasol Badge
+                    if (diwan.trasol != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.purple.shade50,
+                              Colors.purple.shade100,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.purple.shade200,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.tag_rounded,
+                              size: 16,
+                              color: Colors.purple.shade700,
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                'تراسل: ${diwan.trasol}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.purple.shade700,
+                                  fontFamily: 'janna',
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    // Footer Info
+                    const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.purple.shade50,
-                            Colors.purple.shade100,
-                          ],
-                        ),
+                        color: Colors.grey.shade50,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.purple.shade200,
-                          width: 1,
-                        ),
                       ),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(
-                            Icons.tag_rounded,
-                            size: 16,
-                            color: Colors.purple.shade700,
-                          ),
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              'تراسل: ${diwan.trasol}',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.purple.shade700,
-                                fontFamily: 'janna',
+                          if (diwan.createdAt != null)
+                            Flexible(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today,
+                                    size: 12,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      diwan.createdAt.toString().split(' ')[0],
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
+                          if (diwan.overallNumber != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'رقم كلي: ${diwan.overallNumber}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
                   ],
-
-                  // Footer Info
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (diwan.createdAt != null)
-                          Flexible(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.calendar_today,
-                                  size: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                                const SizedBox(width: 4),
-                                Flexible(
-                                  child: Text(
-                                    diwan.createdAt.toString().split(' ')[0],
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        if (diwan.overallNumber != null)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              'رقم كلي: ${diwan.overallNumber}',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey.shade700,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
