@@ -3,23 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField(
-      {Key? key,
-      required this.textFieldController,
-      required this.title,
-      required this.hint,
-      required this.textInputType,
-      // this.subtitle,
-      this.validator,
-      this.codeKey,
-      this.maxLength,
-      this.leading,
-      this.maxLine,
-      this.isSecured = false,
-      this.InputFormatter,
-      this.onChange,
-      this.enabled = true})
-      : super(key: key);
+  CustomTextField({
+    Key? key,
+    required this.textFieldController,
+    required this.title,
+    required this.hint,
+    required this.textInputType,
+    // this.subtitle,
+    this.validator,
+    this.codeKey,
+    this.maxLength,
+    this.leading,
+    this.maxLine,
+    this.isSecured = false,
+    this.InputFormatter,
+    this.onChange,
+    this.enabled = true,
+  }) : super(key: key);
   TextEditingController textFieldController = TextEditingController();
   String title;
   String hint;
@@ -54,7 +54,7 @@ class CustomTextField extends StatelessWidget {
               // fit: BoxFit.scaleDown,
               child: Text(
                 title.tr,
-                style: Get.textTheme.headlineSmall,
+                style: Get.textTheme.bodyLarge,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -66,9 +66,7 @@ class CustomTextField extends StatelessWidget {
             // )
           ],
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        const SizedBox(height: 10.0),
         TextFormField(
           enabled: this.enabled,
           obscureText: isSecured!,
@@ -79,9 +77,7 @@ class CustomTextField extends StatelessWidget {
                   ...InputFormatter!,
                   LengthLimitingTextInputFormatter(maxLength ?? 100),
                 ]
-              : [
-                  LengthLimitingTextInputFormatter(maxLength ?? 100),
-                ],
+              : [LengthLimitingTextInputFormatter(maxLength ?? 100)],
           controller: textFieldController,
           validator: validator,
           keyboardType: textInputType,

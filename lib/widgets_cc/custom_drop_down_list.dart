@@ -104,10 +104,7 @@ class _CustomDropDownListState extends State<CustomDropDownList> {
         if (widget.title != null) ...[
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(
-              widget.title ?? '',
-              style: Get.textTheme.headlineMedium,
-            ),
+            child: Text(widget.title ?? '', style: Get.textTheme.bodyLarge),
           ),
           const SizedBox(height: 10.0),
         ],

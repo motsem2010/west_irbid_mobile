@@ -3,6 +3,8 @@ import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_two_view.dart';
 import 'package:west_irbid_mobile/modules/diwan/diwan_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
+import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class HomeDashboardController extends GetxController {
   // Current user
@@ -33,12 +35,31 @@ class HomeDashboardController extends GetxController {
   }
 
   // Navigate to Diwan view
-  void navigateToDiwan() {
+  void navigateToDiwan() async {
+    startLoading(Get.context!);
+    await initailData();
+    pop(Get.context!);
     Get.to(() => const DiwanView());
   }
 
   @override
   void onClose() {
     super.onClose();
+  }
+
+  initailData() async {
+    if (ConstantsData.listUsers.isEmpty) {
+      await SupaApi.get_users_list();
+    }
+    if (ConstantsData.departments.isEmpty) {
+      await SupaApi.get_departments_list(context: Get.context!);
+    }
+    // if (ConstantsData.listUsers.isEmpty) {
+    //   await SupaApi.get_users_list();
+    // }
+    if (ConstantsData.diwanCLassesList.isEmpty) {
+      await SupaApi.get_diwan_classes(context: Get.context!);
+    }
+    update();
   }
 }

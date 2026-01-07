@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:west_irbid_mobile/modules/login/login_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/settings_service.dart';
+import 'package:west_irbid_mobile/services_utils/translation_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +37,14 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'West Irbid Mobile',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      // getPages: AppPages.routes,
+      translations: TranslationService(),
+      locale: TranslationService().getLocale(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ConstantsData.primaryClr),
         useMaterial3: true,

@@ -305,6 +305,20 @@ class DiwanView extends StatelessWidget {
                             await p0.loadNullClassificationDiwan(context);
                           },
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('diwanList'.tr),
+                            CircleAvatar(
+                              // backgroundColor: Colors.pu,
+                              foregroundColor: Colors.white,
+                              child: Text(
+                                (p0.diwanList ?? []).length.toString(),
+                                // style: Get.textTheme.bodySmall,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),

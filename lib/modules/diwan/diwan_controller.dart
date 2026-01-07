@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:west_irbid_mobile/models/diwan.dart';
 import 'package:west_irbid_mobile/models/diwan_classes.dart';
+import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/services_utils/helper_excel.dart';
@@ -46,7 +47,13 @@ class DiwanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // initailData();
     _initScrollListener();
+  }
+
+  @override
+  void onReady() async {
+    super.onReady();
   }
 
   @override
