@@ -180,6 +180,8 @@ const Map<String, String> ar = {
   'chart': 'المؤشرات',
   'diwanAddedSuccessfully': 'تم إضافه معاملة الديون بنجاح',
   'caseAddedSuccessfully': 'تم اضافه الاجراء بنجاح',
+  'noAttachmentAvailable': 'لا يوجد مرفق متاح',
+  'errorOpeningAttachment': 'خطأ في فتح المرفق',
   'myDiwanList': 'قائمتي - ديوان',
   'diwanList': 'قائمه الديوان',
   'clearAllFIlters': 'مسح كل الفلاتر',
@@ -237,7 +239,7 @@ const Map<String, String> ar = {
   'tandeemList': 'قائمه التنظيم',
   'date': 'تاريخ',
   'others': 'أخرى',
-// ---------------
+  // ---------------
   'wpArchive': 'أرشيف إذن الأشغال',
   'wpArchiveTab': 'تبويبات أرشيف إذن الأشغال',
   'wpDetails': 'تفاصيل إذن الأشغال',

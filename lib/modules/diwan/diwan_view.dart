@@ -342,7 +342,7 @@ class DiwanView extends StatelessWidget {
                           itemCount: p0.diwanList!.length,
                           itemBuilder: (context, index) {
                             Diwan diwan = p0.diwanList![index];
-                            return _buildDiwanCard(diwan, index);
+                            return _buildDiwanCard(p0, diwan, index);
                           },
                         ),
 
@@ -363,7 +363,7 @@ class DiwanView extends StatelessWidget {
     );
   }
 
-  Widget _buildDiwanCard(Diwan diwan, int index) {
+  Widget _buildDiwanCard(DiwanController controller, Diwan diwan, int index) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 3,
@@ -445,6 +445,19 @@ class DiwanView extends StatelessWidget {
                           maxLines: 1,
                         ),
                       ),
+                      // Attachment Icon
+                      if (diwan.attachment != null &&
+                          diwan.attachment!.isNotEmpty &&
+                          diwan.attachment != 'error')
+                        IconButton(
+                          onPressed: () =>
+                              controller.openAttachment(Get.context!, diwan),
+                          icon: const Icon(
+                            Icons.attach_file_rounded,
+                            color: Colors.white,
+                          ),
+                          tooltip: 'عرض المرفق',
+                        ),
                     ],
                   ),
                   if (diwan.serialNumber != null) ...[

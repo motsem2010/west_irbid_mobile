@@ -179,6 +179,8 @@ const Map<String, String> en = {
   'chart': 'Chart',
   'diwanAddedSuccessfully': 'Diwan added successfully',
   'caseAddedSuccessfully': 'Case added successfully',
+  'noAttachmentAvailable': 'No attachment available',
+  'errorOpeningAttachment': 'Error opening attachment',
   'myDiwanList': 'My Diwan List',
   'diwanList': 'Diwan List',
   'clearAllFIlters': 'Clear all filters',

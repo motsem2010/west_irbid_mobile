@@ -269,4 +269,48 @@ class DiwanController extends GetxController {
       }
     }
   }
+
+  /// Open Diwan attachment
+  Future<void> openAttachment(BuildContext context, Diwan diwan) async {
+    if (diwan.attachment == null ||
+        diwan.attachment!.isEmpty ||
+        diwan.attachment == 'error') {
+      HelperMethods.dialogView(
+        context: context,
+        type: 3,
+        message: 'noAttachmentAvailable'.tr,
+      );
+      return;
+    }
+
+    if (diwan.supaSignedUrl != null) {
+      HelperMethods.lanch_attachment(diwan.supaSignedUrl!);
+      return;
+    }
+
+    startLoading(context, willPop: true);
+    try {
+      String? signedUrl = await SupaApi.getPublicUrl(diwan.attachment!);
+      pop(context);
+
+      if (signedUrl != null) {
+        diwan.supaSignedUrl = signedUrl;
+        HelperMethods.lanch_attachment(signedUrl);
+      } else {
+        HelperMethods.dialogView(
+          context: context,
+          type: 1,
+          message: 'errorOpeningAttachment'.tr,
+        );
+      }
+    } catch (e) {
+      pop(context);
+      Get.log('Error opening attachment: $e');
+      HelperMethods.dialogView(
+        context: context,
+        type: 1,
+        message: 'errorOpeningAttachment'.tr,
+      );
+    }
+  }
 }
