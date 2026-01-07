@@ -214,7 +214,7 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                       title: 'summary'.tr,
                       hint: 'Enter'.tr + ' ' + 'summary'.tr,
                       maxLength: 300,
-                      maxLine: 2,
+                      maxLine: 6,
                       textInputType: TextInputType.multiline,
                       leading: const Icon(
                         Icons.summarize,
@@ -615,146 +615,146 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                         ),
                       ),
                     ),
-                    const Expanded(child: SizedBox()),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SegmentedButton<int>(
-                      segments: p0.segments,
-                      selected: p0.selection,
-                      onSelectionChanged: (Set<int> newSelection) {
-                        p0.selection = newSelection;
-                        p0.update();
-                      },
-                      multiSelectionEnabled: false,
-                    ),
-                    MainButton(
-                      text: 'add'.tr,
-                      color: Colors.green,
-                      onPressed: () async {
-                        if (p0.procedureDetailsController.text.trim() == '') {
-                          HelperMethods.dialogView(
-                            context: context,
-                            message: 'أرجوا إدخال تفاصيل الاجراء للمتابعه',
-                            type: 1,
-                          );
-                          return;
-                        }
-                        if (p0.forwardToDepartment == true &&
-                            p0.transferToUser == null) {
-                          HelperMethods.dialogView(
-                            context: context,
-                            message: 'أرجوا ختيار الشخص المحول له',
-                            type: 1,
-                          );
-                          return;
-                        }
-                        if (p0.forwardToDepartment == true &&
-                            p0.transferToUser?.id ==
-                                ConstantsData.currentUser?.id) {
-                          HelperMethods.dialogView(
-                            context: context,
-                            message: 'لايجوز التحول لنفس المستخدم',
-                            type: 1,
-                          );
-                          return;
-                        }
 
-                        startLoading(context, willPop: true);
-                        if (p0.procedureAttachment?.url != null &&
-                            p0.procedureAttachment?.uploadFileUri != 'error') {
-                          p0.procedureAttachment?.uploadFileUri =
-                              await SupaApi.upload_files_supa(
-                                'west-irbid/diwan_procedure',
-                                p0.procedureAttachment!.url!,
-                                p0.procedureAttachment!.fileName!,
-                              );
-                        }
-
-                        if (p0.forwardToDepartment == true &&
-                            p0.transferToUser != null) {
-                          await SupaApi.insert_table<DiwanCopyTo>(
-                            context: context,
-                            table_name: 'diwan_copy_to',
-                            fromJson: DiwanCopyTo.fromJson,
-                            toJson: DiwanCopyTo(
-                              forwardToUserId: p0.transferToUser?.id,
-                              requireAction: true,
-                              addByUserId: ConstantsData.currentUser?.id,
-                              forwardToUserName: p0.transferToUser?.userName,
-                              isDeleted: false,
-                              actionDone: false,
-                              diwanId: p0.diwan_id,
-                              from_name: p0.diwanSourceFromToController.text,
-                              subject: p0.diwanSubjectController.text,
-                            ).toJson(),
-                          );
-                        }
-
-                        WindowsDeviceInfo? winDeviceInfo;
-                        String deviceId = '';
-                        try {
-                          winDeviceInfo = await DeviceInfoPlugin().windowsInfo;
-                          deviceId = winDeviceInfo.deviceId;
-                        } catch (e) {
-                          deviceId = 'mobile_device';
-                        }
-
-                        DiwanWFProcedure procedure = DiwanWFProcedure(
-                          diwanId: p0.diwanObj?.id,
-                          forwardToEmpId: p0.transferToUser?.id,
-                          forwardToEmpName: p0.transferToUser?.userName,
-                          attachment: p0.procedureAttachment?.uploadFileUri,
-                          by_user_email: SupaApi
-                              .supaInstCLient
-                              .auth
-                              .currentSession
-                              ?.user
-                              .email,
-                          byUsername: ConstantsData.currentUser?.userName,
-                          caseType: 'ديوان',
-                          caseTypeId: 2,
-                          details: p0.procedureDetailsController.text,
-                          deviceId: deviceId,
-                        );
-
-                        await p0.insert_diwan_wf_procedure(
-                          context,
-                          procedureWFObj: procedure,
-                        );
-                        await p0.getProceduresList(p0.diwan_id);
-
-                        p0.diwanObj?.status = p0.selection.first;
-
-                        List<Map<String, dynamic>> copies = await SupaApi
-                            .supaInstCLient
-                            .from('diwan_copy_to')
-                            .select()
-                            .eq('diwan_id', p0.diwanObj?.id ?? -1)
-                            .eq(
-                              'forward_to_user_id',
-                              ConstantsData.currentUser?.id ?? -1,
+                    //   child: SegmentedButton<int>(
+                    //     segments: p0.segments,
+                    //     selected: p0.selection,
+                    //     onSelectionChanged: (Set<int> newSelection) {
+                    //       p0.selection = newSelection;
+                    //       p0.update();
+                    //     },
+                    //     multiSelectionEnabled: false,
+                    //   ),
+                    // ),
+                    Expanded(
+                      child: MainButton(
+                        text: 'add'.tr,
+                        color: Colors.green,
+                        onPressed: () async {
+                          if (p0.procedureDetailsController.text.trim() == '') {
+                            HelperMethods.dialogView(
+                              context: context,
+                              message: 'أرجوا إدخال تفاصيل الاجراء للمتابعه',
+                              type: 1,
                             );
-
-                        if (copies.isNotEmpty) {
-                          List<DiwanCopyTo> diwanCopyToItems = copies
-                              .map((e) => DiwanCopyTo.fromJson(e))
-                              .toList();
-                          if (diwanCopyToItems.isNotEmpty &&
-                              diwanCopyToItems.last.actionDone == false) {
-                            // DiwanCopyTo lastCopy = diwanCopyToItems.last;
-                            // Update lastCopy to done
-                            // This part would ideally update the record in Supabase
+                            return;
                           }
-                        }
+                          if (p0.forwardToDepartment == true &&
+                              p0.transferToUser == null) {
+                            HelperMethods.dialogView(
+                              context: context,
+                              message: 'أرجوا ختيار الشخص المحول له',
+                              type: 1,
+                            );
+                            return;
+                          }
+                          if (p0.forwardToDepartment == true &&
+                              p0.transferToUser?.id ==
+                                  ConstantsData.currentUser?.id) {
+                            HelperMethods.dialogView(
+                              context: context,
+                              message: 'لايجوز التحول لنفس المستخدم',
+                              type: 1,
+                            );
+                            return;
+                          }
 
-                        p0.addProcedure = false;
-                        p0.selectedCase = null;
-                        p0.update();
-                        pop(context);
-                      },
+                          startLoading(context, willPop: true);
+                          if (p0.procedureAttachment?.url != null &&
+                              p0.procedureAttachment?.uploadFileUri !=
+                                  'error') {
+                            p0.procedureAttachment?.uploadFileUri =
+                                await SupaApi.upload_files_supa(
+                                  'west-irbid/diwan_procedure',
+                                  p0.procedureAttachment!.url!,
+                                  p0.procedureAttachment!.fileName!,
+                                );
+                          }
+
+                          if (p0.forwardToDepartment == true &&
+                              p0.transferToUser != null) {
+                            await SupaApi.insert_table<DiwanCopyTo>(
+                              context: context,
+                              table_name: 'diwan_copy_to',
+                              fromJson: DiwanCopyTo.fromJson,
+                              toJson: DiwanCopyTo(
+                                forwardToUserId: p0.transferToUser?.id,
+                                requireAction: true,
+                                addByUserId: ConstantsData.currentUser?.id,
+                                forwardToUserName: p0.transferToUser?.userName,
+                                isDeleted: false,
+                                actionDone: false,
+                                diwanId: p0.diwan_id,
+                                from_name: p0.diwanSourceFromToController.text,
+                                subject: p0.diwanSubjectController.text,
+                              ).toJson(),
+                            );
+                          }
+
+                          WindowsDeviceInfo? winDeviceInfo;
+                          String deviceId = '';
+                          try {
+                            winDeviceInfo =
+                                await DeviceInfoPlugin().windowsInfo;
+                            deviceId = winDeviceInfo.deviceId;
+                          } catch (e) {
+                            deviceId = 'mobile_device';
+                          }
+
+                          DiwanWFProcedure procedure = DiwanWFProcedure(
+                            diwanId: p0.diwanObj?.id,
+                            forwardToEmpId: p0.transferToUser?.id,
+                            forwardToEmpName: p0.transferToUser?.userName,
+                            attachment: p0.procedureAttachment?.uploadFileUri,
+                            by_user_email: SupaApi
+                                .supaInstCLient
+                                .auth
+                                .currentSession
+                                ?.user
+                                .email,
+                            byUsername: ConstantsData.currentUser?.userName,
+                            caseType: 'ديوان',
+                            caseTypeId: 2,
+                            details: p0.procedureDetailsController.text,
+                            deviceId: deviceId,
+                          );
+
+                          await p0.insert_diwan_wf_procedure(
+                            context,
+                            procedureWFObj: procedure,
+                          );
+                          await p0.getProceduresList(p0.diwan_id);
+
+                          p0.diwanObj?.status = p0.selection.first;
+
+                          List<Map<String, dynamic>> copies = await SupaApi
+                              .supaInstCLient
+                              .from('diwan_copy_to')
+                              .select()
+                              .eq('diwan_id', p0.diwanObj?.id ?? -1)
+                              .eq(
+                                'forward_to_user_id',
+                                ConstantsData.currentUser?.id ?? -1,
+                              );
+
+                          if (copies.isNotEmpty) {
+                            List<DiwanCopyTo> diwanCopyToItems = copies
+                                .map((e) => DiwanCopyTo.fromJson(e))
+                                .toList();
+                            if (diwanCopyToItems.isNotEmpty &&
+                                diwanCopyToItems.last.actionDone == false) {
+                              // DiwanCopyTo lastCopy = diwanCopyToItems.last;
+                              // Update lastCopy to done
+                              // This part would ideally update the record in Supabase
+                            }
+                          }
+
+                          p0.addProcedure = false;
+                          p0.selectedCase = null;
+                          p0.update();
+                          pop(context);
+                        },
+                      ).paddingSymmetric(horizontal: 10),
                     ),
                   ],
                 ).paddingSymmetric(vertical: 10),
@@ -774,42 +774,62 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
               children: p0.caseProceduresList!
                   .map(
                     (e) => Card(
-                      child: ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'رقم الاجراء التسلسلي:'.tr + '${e.id.toString()}',
-                            ),
-                            Text(
-                              'من:${e.byUsername.toString()}',
-                            ).paddingSymmetric(horizontal: 10),
-                            Expanded(
-                              child: Text(
-                                'details: '.tr + e.details.toString(),
-                                maxLines: 3,
-                                overflow: TextOverflow.fade,
-                                style: Get.textTheme.bodyMedium?.copyWith(
-                                  color: Colors.blue,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'رقم الاجراء التسلسلي:'.tr +
+                                      '${e.id.toString()}',
                                 ),
                               ),
-                            ),
-                            if (e.forwardToEmpId != null)
-                              Text(
-                                'transformTo'.tr +
-                                    ':' +
-                                    e.forwardToEmpName.toString(),
-                              ).paddingSymmetric(horizontal: 10),
-                            CustomFIleScanAttachment(
-                              enable: false,
-                              title: 'إضغط للتحميل'.tr,
-                              onPress: () async {},
-                              attachment: Attachment(
-                                uploadFileUri: e.attachment,
+                              Expanded(
+                                child: Text(
+                                  'من:${e.byUsername.toString()}',
+                                ).paddingSymmetric(horizontal: 10),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: (e.forwardToEmpId != null)
+                                    ? Text(
+                                        'transformTo'.tr +
+                                            ':' +
+                                            e.forwardToEmpName.toString(),
+                                      ).paddingSymmetric(horizontal: 10)
+                                    : const SizedBox(),
+                              ),
+                              Expanded(
+                                child: CustomFIleScanAttachment(
+                                  enable: false,
+                                  title: 'إضغط للتحميل'.tr,
+                                  onPress: () async {},
+                                  attachment: Attachment(
+                                    uploadFileUri: e.attachment,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'details: '.tr + e.details.toString(),
+                                  maxLines: 10,
+                                  overflow: TextOverflow.fade,
+                                  style: Get.textTheme.bodyMedium?.copyWith(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                              const Expanded(child: SizedBox()),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   )

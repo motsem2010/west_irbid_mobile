@@ -84,8 +84,8 @@ class CustomTextField extends StatelessWidget {
           maxLines: maxLine ?? 1,
           onChanged: onChange,
           textAlign: TextAlign.start,
-          style: Get.textTheme.headlineMedium!.copyWith(
-            color: Colors.grey.withOpacity(0.8),
+          style: Get.textTheme.bodyMedium?.copyWith(
+            color: Colors.black.withOpacity(0.8),
             fontWeight: FontWeight.w600,
           ),
           decoration: InputDecoration(
