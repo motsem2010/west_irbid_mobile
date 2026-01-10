@@ -11,31 +11,34 @@ class DiwanCopyTo {
   final int? actionProcedureId;
   String? from_name, subject;
 
-  DiwanCopyTo(
-      {this.id,
-      this.createdAt,
-      this.diwanId,
-      this.forwardToUserId,
-      this.requireAction,
-      this.addByUserId,
-      this.forwardToUserName,
-      this.isDeleted,
-      this.actionDone,
-      this.actionProcedureId,
-      this.from_name,
-      this.subject});
+  DiwanCopyTo({
+    this.id,
+    this.createdAt,
+    this.diwanId,
+    this.forwardToUserId,
+    this.requireAction,
+    this.addByUserId,
+    this.forwardToUserName,
+    this.isDeleted,
+    this.actionDone,
+    this.actionProcedureId,
+    this.from_name,
+    this.subject,
+  });
 
   factory DiwanCopyTo.fromJson(Map<String, dynamic> json) {
     return DiwanCopyTo(
-      id: json['id'] as int,
-      createdAt: json['created_at'] as String,
-      diwanId: json['diwan_id'] as int,
-      forwardToUserId: json['forward_to_user_id'] as int,
-      requireAction: json['require_action'] as bool,
-      addByUserId: json['add_by_user_id'] as int,
-      forwardToUserName: json['forward_to_user_name'] as String,
-      isDeleted: json['is_deleted'] as bool,
-      actionDone: json['action_done'] as bool,
+      id: json['id'] as int?,
+      createdAt: json['created_at'] as String?,
+      diwanId: json['diwan_id'] as int?,
+      forwardToUserId: json['forward_to_user_id'] as int?,
+      requireAction: json['require_action'] as bool?,
+      addByUserId: json['add_by_user_id'] != null
+          ? int.parse(json['add_by_user_id'].toString())
+          : -2,
+      forwardToUserName: json['forward_to_user_name'] as String?,
+      isDeleted: json['is_deleted'] as bool?,
+      actionDone: json['action_done'] as bool?,
       actionProcedureId: json['action_procedure_id'] as int?,
       from_name: json['from_name'],
       subject: json['subject'],
@@ -55,7 +58,7 @@ class DiwanCopyTo {
       'action_done': actionDone,
       'action_procedure_id': actionProcedureId,
       'from_name': from_name,
-      'subject': subject
+      'subject': subject,
     };
   }
 }

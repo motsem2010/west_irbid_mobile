@@ -198,6 +198,14 @@ class DiwanCardItem extends StatelessWidget {
                         value: diwanObj.to!,
                         color: Colors.blue,
                       ),
+                    if (diwanObj.copy_to_names != null &&
+                        diwanObj.copy_to_names != '[]')
+                      _buildDetailRow(
+                        icon: Icons.copy_all_rounded,
+                        label: 'copyTo'.tr,
+                        value: diwanObj.copy_to_names!,
+                        color: Colors.purple,
+                      ),
 
                     // Summary Section
                     if (diwanObj.summary != null) ...[
