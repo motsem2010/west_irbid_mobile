@@ -263,7 +263,7 @@ class LoginView extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: controller.isLoading.value
                             ? null
-                            : controller.login,
+                            : () => controller.login(Get.context!),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF3B82F6),
                           disabledBackgroundColor: const Color(0xFF93C5FD),

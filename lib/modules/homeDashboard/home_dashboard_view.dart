@@ -177,6 +177,15 @@ class HomeDashboardView extends StatelessWidget {
                       color: const Color(0xFFEF4444),
                       onTap: controller.navigateToDiwan,
                     ),
+
+                    // Workflow Button
+                    _buildCategoryCard(
+                      title: 'workflow'.tr,
+                      subtitle: 'myWorkflow'.tr,
+                      icon: Icons.account_tree_outlined,
+                      color: const Color(0xFF8B5CF6),
+                      onTap: controller.navigateToWorkflow,
+                    ),
                   ],
                 ),
 

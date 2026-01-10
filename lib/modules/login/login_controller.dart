@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/home_dashboard_view.dart';
+import 'package:west_irbid_mobile/services_utils/constants.dart';
+import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
+import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/supa_auth_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
@@ -46,7 +49,7 @@ class LoginController extends GetxController {
   }
 
   // Login method
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
     // Validate inputs
     if (emailController.text.trim().isEmpty) {
       showToast(
@@ -78,7 +81,13 @@ class LoginController extends GetxController {
 
         // Show success message
         showToast('تم تسجيل الدخول بنجاح', backgroundColor: Colors.green);
-
+        await HelperMethods.get_user_roles(context);
+        await SupaApi.get_user_data(
+          context: context,
+          user_email:
+              SupaApi.supaInstCLient.auth.currentSession?.user.email ?? 'n',
+        );
+        Get.log(ConstantsData.currentUser?.roleNameAr ?? '');
         // Navigate to home dashboard
         Get.offAll(() => const HomeDashboardView());
 

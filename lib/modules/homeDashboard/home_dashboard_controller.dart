@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_two_view.dart';
 import 'package:west_irbid_mobile/modules/diwan/diwan_view.dart';
+import 'package:west_irbid_mobile/modules/workflow/workflow_binding.dart';
+import 'package:west_irbid_mobile/modules/workflow/workflow_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
@@ -40,6 +42,14 @@ class HomeDashboardController extends GetxController {
     await initailData();
     pop(Get.context!);
     Get.to(() => const DiwanView());
+  }
+
+  // Navigate to Workflow view
+  void navigateToWorkflow() async {
+    startLoading(Get.context!);
+    await initailData();
+    pop(Get.context!);
+    Get.to(() => const WorkflowView(), binding: WorkflowBinding());
   }
 
   @override

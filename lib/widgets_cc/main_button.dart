@@ -39,7 +39,7 @@ class MainButton extends StatelessWidget {
 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
