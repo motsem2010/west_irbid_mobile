@@ -180,6 +180,12 @@ class DiwanCardItem extends StatelessWidget {
                   children: [
                     // Details
                     _buildDetailRow(
+                      icon: Icons.subject_rounded,
+                      label: 'subject'.tr,
+                      value: diwanObj.subject ?? '',
+                      color: Colors.blueGrey,
+                    ),
+                    _buildDetailRow(
                       icon: Icons.person_outline_rounded,
                       label: 'from'.tr,
                       value: diwanObj.from ?? '',
