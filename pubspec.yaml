@@ -70,6 +70,7 @@ dependencies:
   flutter_twain_scanner: ^1.0.0
   flutter_zkteco: ^1.2.0
   flutter_gemini: ^3.0.0
+  firebase_core: ^4.3.0
 # dev_dependencies:
 #   flutter_launcher_icons: ^0.13.1
 #   flutter_test:

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "522393483539",
+    "project_id": "west-irbid-4f42c",
+    "storage_bucket": "west-irbid-4f42c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522393483539:android:ad707d9ade2dd7850e02e6",
+        "android_client_info": {
+          "package_name": "com.example.west_irbid_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1akRiXY6RZ9f7PpCp9TtytqTkLoNEyDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
