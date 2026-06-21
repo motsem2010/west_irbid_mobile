@@ -71,6 +71,8 @@ dependencies:
   flutter_zkteco: ^1.2.0
   flutter_gemini: ^3.0.0
   firebase_core: ^4.3.0
+  flutter_local_notifications: ^19.5.0
+  firebase_messaging: ^16.1.0
 # dev_dependencies:
 #   flutter_launcher_icons: ^0.13.1
 #   flutter_test:
