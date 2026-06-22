@@ -28,8 +28,9 @@ android {
         applicationId = "com.example.west_irbid_mobile"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = 36
+        // minSdkVersion = 23
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

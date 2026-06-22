@@ -6,6 +6,7 @@ import 'package:west_irbid_mobile/models/diwan_classes.dart';
 import 'package:west_irbid_mobile/models/floor_model.dart';
 import 'package:west_irbid_mobile/models/lookup_model.dart';
 import 'package:west_irbid_mobile/models/news_source.dart';
+import 'package:west_irbid_mobile/models/notification_data_object_model.dart';
 import 'package:west_irbid_mobile/models/roles_model.dart';
 import 'package:west_irbid_mobile/models/settings_model.dart';
 import 'package:west_irbid_mobile/models/user_model.dart';
@@ -37,6 +38,8 @@ class ConstantsData {
   static List<SettingModel> settingsList = [];
   static List<LoockupModel> tandeemTypeList = [];
   static List<LoockupModel> tandeemProceduresTypeList = [];
+  static List<NotificationDataModel> notificationsList = [];
+
   static List<String> sakan = [
     'أ',
     'ب',
