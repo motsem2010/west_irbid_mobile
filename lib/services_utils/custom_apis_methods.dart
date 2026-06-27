@@ -11,15 +11,12 @@ class CustomApi {
   static Map<String, String> get authorizedHeaders {
     return {
       'Content-Type': 'application/json',
-      'accept': 'application/json',
       'Authorization': 'Bearer ${userToken}'
     };
   }
 
   static Future<String?> SpeedApi(
       {bool isPost = false,
-      bool isPut = false,
-      bool isDelete = false,
       String? customBaseUrl,
       required String path,
       Function(int?)? statusCode,
@@ -32,11 +29,9 @@ class CustomApi {
     Uri domain = Uri.parse(customBaseUrl ?? (baseUrl2!));
     Uri uri = Uri();
     if (domain.scheme == 'https')
-      uri = Uri.https(domain.host + ':' + domain.port.toString(),
-          domain.path + path, urlParameters ?? {});
+      uri = Uri.https(domain.host, domain.path + path, urlParameters ?? {});
     else
-      uri = Uri.http(domain.host + ':' + domain.port.toString(),
-          domain.path + path, urlParameters ?? {});
+      uri = Uri.http(domain.host, domain.path + path, urlParameters ?? {});
 
     try {
       debugPrint('SpeedApi URL : $uri');
@@ -52,13 +47,7 @@ class CustomApi {
             uri.toString(),
             cancelToken: CancelToken(),
             data: isPost ? body : null,
-            options: Options(
-                headers: headers,
-                method: isPut
-                    ? 'PUT'
-                    : isPost
-                        ? 'POST'
-                        : 'GET'),
+            options: Options(headers: headers, method: isPost ? 'POST' : 'GET'),
           )
           .onError((error, stackTrace) =>
               dioResp.Response(requestOptions: RequestOptions(path: 'path')));

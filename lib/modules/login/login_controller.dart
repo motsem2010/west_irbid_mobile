@@ -2,13 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:west_irbid_mobile/models/user_model.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/home_dashboard_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
-import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
-// import 'package:west_irbid_mobile/services_utils/supa_api.dart';
-// import 'package:west_irbid_mobile/services_utils/supa_auth_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_auth_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class LoginController extends GetxController {
@@ -71,43 +69,29 @@ class LoginController extends GetxController {
 
     try {
       // Attempt to sign in
-      bool isLoged = await FastAPI_Api().login(
-        user_email: emailController.text,
-        password: passwordController.text,
+      final user = await AuthController.signIn(
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
-      if (isLoged) {
-        box.write('username', emailController.text);
-        box.write('password', passwordController.text);
+
+      if (user != null) {
+        // Save credentials
+        await box.write('email', emailController.text.trim());
+        await box.write('password', passwordController.text.trim());
 
         // Show success message
         showToast('تم تسجيل الدخول بنجاح', backgroundColor: Colors.green);
-        await HelperMethods.get_user_roles_FASTApi(context);
-
-        // try {
-        List<UserModel>? _users = await FastAPI_Api.get_Table<UserModel>(
+        await HelperMethods.get_user_roles(context);
+        await SupaApi.get_user_data(
           context: context,
-          table_name: 'user_pc_auth',
-          pageNumber: 1,
-          pageSize: 200,
-          query: {'user_email': ConstantsData.currentUser?.userEmail ?? ''},
-          fromJson: UserModel.fromJson,
+          user_email:
+              SupaApi.supaInstCLient.auth.currentSession?.user.email ?? 'n',
         );
-        if ((_users ?? []).isNotEmpty) {
-          ConstantsData.currentUser = _users?[0];
-          if (ConstantsData.currentUser?.userEmail != null) {
-            FastAPI_Api.connectToWebSocket(
-              email: ConstantsData.currentUser!.userEmail!,
-            );
-          }
-        }
-
         Get.log(ConstantsData.currentUser?.roleNameAr ?? '');
         // Navigate to home dashboard
         Get.offAll(() => const HomeDashboardView());
 
-        debugPrint(
-          'Login successful: ${ConstantsData.currentUser?.userEmail.toString()}',
-        );
+        debugPrint('Login successful: ${user.email}');
       } else {
         showToast(
           'فشل تسجيل الدخول. يرجى التحقق من البيانات',
@@ -130,22 +114,22 @@ class LoginController extends GetxController {
       return;
     }
 
-    // try {
-    //   isLoading.value = true;
-    //   await AuthController().forgotPassword(emailController.text.trim());
-    //   showToast(
-    //     'تم إرسال رابط إعادة تعيين كلمة المرور',
-    //     backgroundColor: Colors.green,
-    //   );
-    // } catch (e) {
-    //   debugPrint('Forgot password error: $e');
-    //   showToast(
-    //     'حدث خطأ أثناء إرسال رابط إعادة التعيين',
-    //     backgroundColor: Colors.red,
-    //   );
-    // } finally {
-    //   isLoading.value = false;
-    // }
+    try {
+      isLoading.value = true;
+      await AuthController().forgotPassword(emailController.text.trim());
+      showToast(
+        'تم إرسال رابط إعادة تعيين كلمة المرور',
+        backgroundColor: Colors.green,
+      );
+    } catch (e) {
+      debugPrint('Forgot password error: $e');
+      showToast(
+        'حدث خطأ أثناء إرسال رابط إعادة التعيين',
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override
