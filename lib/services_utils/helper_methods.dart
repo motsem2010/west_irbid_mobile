@@ -11,9 +11,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:west_irbid_mobile/models/attachment_model.dart';
 import 'package:west_irbid_mobile/models/licensed_model.dart';
 import 'package:west_irbid_mobile/models/roles_model.dart';
+import 'package:west_irbid_mobile/models/user_role_model.dart';
 import 'package:west_irbid_mobile/models/wp_model.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
+import 'package:west_irbid_mobile/services_utils/notifications_handler.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class HelperMethods {
@@ -443,6 +446,57 @@ class HelperMethods {
     }
   }
 
+  // static List<String> readCSVFile(String filePath) {
+  //   File file = File(filePath);
+  //   List<String> lines = file.readAsLinesSync() ?? [];
+
+  //   for (String line in lines) {
+  //     List<String> values = line.split(',');
+  //     // print(values[0] + values[2]);
+  //   }
+  //   return lines;
+  // }
+  static Future<void> get_user_roles_FASTApi(BuildContext context) async {
+    debugPrint(
+      ConstantsData.currentUser?.userEmail.toString() ?? '' + ' From auth',
+    );
+    if (ConstantsData.rolesList.isEmpty) {
+      ConstantsData.rolesList =
+          await FastAPI_Api.get_Table<RoleModel>(
+            context: context,
+            table_name: 'roles',
+            pageNumber: 1,
+            pageSize: 200,
+            query: {},
+            fromJson: RoleModel.fromJson,
+          ) ??
+          [];
+      log('rolesList : ${ConstantsData.rolesList.length.toString()}');
+    }
+
+    if ((ConstantsData.rolesList).isNotEmpty) {
+      ConstantsData.userGrantedRoles =
+          await FastAPI_Api.get_Table<UserRoleModel>(
+            context: context,
+            table_name: 'users_role',
+            pageNumber: 1,
+            pageSize: 200,
+            query: {
+              'user_name': ConstantsData.currentUser?.userEmail ?? '',
+              'active': true,
+            },
+            fromJson: UserRoleModel.fromJson,
+          ) ??
+          [];
+    } else {
+      HelperMethods.dialogView(
+        context: context,
+        message: 'No roles return from server or user email is null',
+        type: 1,
+      );
+    }
+  }
+
   static List<String> readCSVFile(String filePath) {
     File file = File(filePath);
     List<String> lines = file.readAsLinesSync() ?? [];
@@ -452,5 +506,145 @@ class HelperMethods {
       // print(values[0] + values[2]);
     }
     return lines;
+  }
+
+  static void showNotificationsDrawer(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder:
+          (
+            BuildContext buildContext,
+            Animation animation,
+            Animation secondaryAnimation,
+          ) {
+            return Align(
+              alignment: Alignment.centerRight,
+              child: Material(
+                elevation: 16.0,
+                child: HelperMethods.notificationDrawer(context),
+              ),
+            );
+          },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        );
+      },
+    );
+  }
+
+  static Widget notificationIconButton(BuildContext context) {
+    return IconButton(
+      icon: Stack(
+        children: [
+          Icon(Icons.notifications, color: ConstantsData.primaryClr, size: 30),
+          if (ConstantsData.notificationsList.isNotEmpty)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                padding: EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                constraints: BoxConstraints(minWidth: 16, minHeight: 16),
+                child: Text(
+                  ConstantsData.notificationsList.length.toString(),
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+        ],
+      ),
+      onPressed: () {
+        showNotificationsDrawer(context);
+        // Scaffold.of(context).openDrawer();
+      },
+    );
+  }
+
+  static Widget notificationDrawer(BuildContext context) {
+    return SizedBox(
+      width: Get.width * 0.3,
+      child: Drawer(
+        width: Get.width * 0.3,
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: ConstantsData.primaryClr),
+              child: Center(
+                child: Text(
+                  'Notifications'.tr,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ConstantsData.notificationsList.isEmpty
+                  ? Center(child: Text('No new notifications'.tr))
+                  : ListView.builder(
+                      itemCount: ConstantsData.notificationsList.length,
+                      itemBuilder: (context, index) {
+                        var notification =
+                            ConstantsData.notificationsList[index];
+                        return InkWell(
+                          onTap: () {
+                            notificationNavigationHandler(notification);
+                          },
+                          child: Card(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.notifications_active,
+                                color: ConstantsData.secondaryClr,
+                              ),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(notification.view ?? 'Notification'),
+                                  Text(notification.dateOfCreate ?? 'N/A'),
+                                ],
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('ID: ${notification.action_id ?? ''}'),
+                                  Text(
+                                    'Message: ${notification.message ?? ''}',
+                                  ),
+                                  if (notification.parameters != null)
+                                    Text(
+                                      'Parameters: ${notification.parameters}',
+                                    ),
+                                ],
+                              ),
+                              isThreeLine: true,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

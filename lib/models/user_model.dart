@@ -13,27 +13,32 @@ class UserModel {
   String? departmentName;
   String? manager_name;
   int? manager_id;
+  bool actionRequired;
 
-  UserModel(
-      {this.id,
-      this.createdAt,
-      this.macId,
-      this.machineNameId,
-      this.active,
-      this.pcUsername,
-      this.userEmail,
-      this.roleId,
-      this.roleNameAr,
-      this.userName,
-      this.departmentId,
-      this.departmentName,
-      this.manager_id,
-      this.manager_name});
+  UserModel({
+    this.id,
+    this.createdAt,
+    this.macId,
+    this.machineNameId,
+    this.active,
+    this.pcUsername,
+    this.userEmail,
+    this.roleId,
+    this.roleNameAr,
+    this.userName,
+    this.departmentId,
+    this.departmentName,
+    this.manager_id,
+    this.manager_name,
+    this.actionRequired = false,
+  });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  UserModel fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
       macId: json['mac_id'],
       machineNameId: json['machine_name_id'],
       active: json['active'],
@@ -64,7 +69,7 @@ class UserModel {
       'department_id': departmentId,
       'department_name': departmentName,
       'manager_name': manager_name,
-      'manager_id': manager_id
+      'manager_id': manager_id,
     };
   }
 

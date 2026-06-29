@@ -99,7 +99,7 @@ class DiwanDetailsController extends GetxController {
             pageNumber: 1,
             pageSize: 200,
             table_name: 'user_pc_auth',
-            fromJson: UserModel.fromJson,
+            fromJson: UserModel().fromJson,
           ) ??
           [];
     }

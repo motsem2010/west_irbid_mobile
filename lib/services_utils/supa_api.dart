@@ -1684,7 +1684,7 @@ class SupaApi {
 
     Get.log(x.toString());
     if (x.isNotEmpty) {
-      _users = x.map((e) => UserModel.fromJson(e)).toList();
+      _users = x.map((e) => UserModel().fromJson(e)).toList();
       if (_users.length > 0) ConstantsData.currentUser = _users[0];
       isGet = true;
     } else {
@@ -1721,7 +1721,7 @@ class SupaApi {
       Get.log(x.toString());
       if (x.isNotEmpty) {
         ConstantsData.departmentsUser = x
-            .map((e) => UserModel.fromJson(e))
+            .map((e) => UserModel().fromJson(e))
             .toList();
         isGet = true;
       } else {
@@ -1750,7 +1750,7 @@ class SupaApi {
           pageNumber: 1,
           pageSize: 400,
           table_name: 'user_pc_auth',
-          fromJson: UserModel.fromJson,
+          fromJson: UserModel().fromJson,
         ) ??
         [];
   }

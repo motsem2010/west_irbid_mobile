@@ -16,7 +16,7 @@ import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class FastAPI_Api {
-  static final String baseUrl = 'http://127.0.0.1:8000';
+  static final String baseUrl = 'http://10.0.2.2:8000';
 
   Future<bool> login({
     String? user_email,
