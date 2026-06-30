@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:west_irbid_mobile/models/diwan.dart';
 import 'package:west_irbid_mobile/models/diwan_classes.dart';
-import 'package:west_irbid_mobile/services_utils/constants.dart';
-import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
+// import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/services_utils/helper_excel.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
+import 'package:west_irbid_mobile/widgets_cc/pdf_viewer_page.dart';
 
 class DiwanController extends GetxController {
   // Filter Controllers
@@ -124,11 +125,13 @@ class DiwanController extends GetxController {
     }
 
     // Fetch data from Supabase
-    List<Diwan>? fetchedDiwanList = await SupaApi.get_search_diwan(
+    List<Diwan>? fetchedDiwanList = await FastAPI_Api.get_Table<Diwan>(
       context: context,
       query: query,
+      table_name: 'diwan',
       pageNumber: pageCurrent,
       pageSize: pageSize,
+      fromJson: Diwan.fromJson,
     );
 
     if (fetchedDiwanList != null && fetchedDiwanList.isNotEmpty) {
@@ -155,17 +158,28 @@ class DiwanController extends GetxController {
     startLoading(context);
 
     if (loadMore && diwanSourceFromToFilterController.text.isNotEmpty) {
-      List<Diwan>? fetchedDiwanList =
-          await SupaApi.get_search_diwan_with_filter(
-            context: context,
-            filterCol: 'diwan_source_from_to',
-            filterValue: diwanSourceFromToFilterController.text.replaceAll(
-              ' ',
-              ' & ',
-            ),
-            pageNumber: pageCurrent,
-            pageSize: pageSize,
-          );
+      List<Diwan>? fetchedDiwanList = await FastAPI_Api.get_Table<Diwan>(
+        context: context,
+        query: {
+          'diwan_source_from_to': diwanSourceFromToFilterController.text
+              .replaceAll(' ', ' & '),
+        },
+        table_name: 'diwan',
+        pageNumber: 1,
+        pageSize: pageSize,
+        fromJson: Diwan.fromJson,
+      );
+
+      // await SupaApi.get_search_diwan_with_filter(
+      //   context: context,
+      //   filterCol: 'diwan_source_from_to',
+      //   filterValue: diwanSourceFromToFilterController.text.replaceAll(
+      //     ' ',
+      //     ' & ',
+      //   ),
+      //   pageNumber: pageCurrent,
+      //   pageSize: pageSize,
+      // );
 
       if (fetchedDiwanList != null && fetchedDiwanList.isNotEmpty) {
         mainMyDiwanList?.addAll(fetchedDiwanList.toList());
@@ -190,17 +204,27 @@ class DiwanController extends GetxController {
     startLoading(context);
 
     if (loadMore && summaryFilterController.text.isNotEmpty) {
-      List<Diwan>? fetchedDiwanList =
-          await SupaApi.get_search_diwan_with_filter(
-            context: context,
-            filterCol: 'summary',
-            filterValue: summaryFilterController.text.trim().replaceAll(
-              ' ',
-              ' & ',
-            ),
-            pageNumber: pageCurrent,
-            pageSize: pageSize,
-          );
+      List<Diwan>? fetchedDiwanList = await FastAPI_Api.get_Table<Diwan>(
+        context: context,
+        query: {
+          'summary': summaryFilterController.text.trim().replaceAll(' ', ' & '),
+        },
+        table_name: 'diwan',
+        pageNumber: 1,
+        pageSize: pageSize,
+        fromJson: Diwan.fromJson,
+      );
+
+      // await SupaApi.get_search_diwan_with_filter(
+      //   context: context,
+      //   filterCol: 'summary',
+      //   filterValue: summaryFilterController.text.trim().replaceAll(
+      //     ' ',
+      //     ' & ',
+      //   ),
+      //   pageNumber: pageCurrent,
+      //   pageSize: pageSize,
+      // );
 
       if (fetchedDiwanList != null && fetchedDiwanList.isNotEmpty) {
         mainMyDiwanList?.addAll(fetchedDiwanList.toList());
@@ -224,9 +248,13 @@ class DiwanController extends GetxController {
     clearPagingData();
     startLoading(context);
 
-    List<Diwan>? fetchedDiwanList = await SupaApi.get_diwan_nulls(
+    List<Diwan>? fetchedDiwanList = await FastAPI_Api.get_Table<Diwan>(
       context: context,
-      function_name: 'get_diwan_null_records',
+      query: {'attachment': 'null'},
+      table_name: 'diwan',
+      pageNumber: 1,
+      pageSize: pageSize,
+      fromJson: Diwan.fromJson,
     );
 
     if (fetchedDiwanList != null && fetchedDiwanList.isNotEmpty) {
@@ -297,12 +325,18 @@ class DiwanController extends GetxController {
 
     startLoading(context, willPop: true);
     try {
-      String? signedUrl = await SupaApi.getPublicUrl(diwan.attachment!);
+      String? signedUrl;
+      var _res = await FastAPI_Api.getPublicUrl(diwan.attachment!);
+
+      if (_res.$2 == true && _res.$1 != null) signedUrl = _res.$1;
+
+      //  signedUrl = await SupaApi.getPublicUrl(diwan.attachment!);
       pop(context);
 
       if (signedUrl != null) {
         diwan.supaSignedUrl = signedUrl;
-        HelperMethods.lanch_attachment(signedUrl);
+        // HelperMethods.lanch_attachment(signedUrl);
+        push(PDFViewerPage(url: diwan.supaSignedUrl!));
       } else {
         HelperMethods.dialogView(
           context: context,

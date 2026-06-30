@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_twain_scanner
   gtk
   printing
+  syncfusion_pdfviewer_linux
   url_launcher_linux
 )
 

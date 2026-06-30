@@ -47,7 +47,7 @@ class HelperMethods {
     return hour.toString() + ":" + bt.split(":")[1] + pmam;
   }
 
-  static Future<bool> lanch_attachment(String attach) {
+  static Future<bool> lanch_attachment(String attach, {bool isPdf = false}) {
     return launchUrl(Uri.parse(attach), mode: LaunchMode.externalApplication);
   }
 
