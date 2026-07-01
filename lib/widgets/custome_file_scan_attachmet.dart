@@ -8,6 +8,7 @@ import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/ftp_helper.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/widgets_cc/attachment_widget.dart';
 import 'package:west_irbid_mobile/widgets_cc/main_button.dart';
@@ -158,9 +159,10 @@ class CustomFIleScanAttachment extends StatelessWidget {
         attachment?.isFTP == false) {
       startLoading(context, willPop: true);
 
-      attachment?.supaSignedUrl = await SupaApi.getPublicUrl(
-        attachment?.uploadFileUri ?? "",
-      );
+      var res = await FastAPI_Api.getPublicUrl(attachment?.uploadFileUri ?? "");
+      if (res.$2 == true) {
+        attachment?.supaSignedUrl = res.$1;
+      }
       debugPrint(attachment?.supaSignedUrl);
       pop(context);
     }

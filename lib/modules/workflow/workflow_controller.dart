@@ -17,6 +17,7 @@ import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/helper_excel.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/widgets/custom_text_field.dart';
 
@@ -119,7 +120,7 @@ class WorkflowController extends GetxController
   getPaginationData(bool withLoadData, Map<String, Object>? query) async {
     if (withLoadData) {
       Map<String, Object> query1 = query ?? {};
-      dataCount = await SupaApi.get_diwan_count(
+      dataCount = await FastAPI_Api.get_diwan_count(
         context: Get.context!,
         query: query1,
       );
@@ -141,7 +142,7 @@ class WorkflowController extends GetxController
   }
 
   refreshMyListsData() async {
-    myWFList = await SupaApi.get_Table<Diwan>(
+    myWFList = await FastAPI_Api.get_Table<Diwan>(
       table_name: 'workflow',
       fromJson: Diwan.fromJson,
       context: Get.context!,
@@ -155,7 +156,7 @@ class WorkflowController extends GetxController
 
   refreshMyWFProceduresData() async {
     myWFDiwanCopyTo =
-        await SupaApi.get_Table<DiwanCopyTo>(
+        await FastAPI_Api.get_Table<DiwanCopyTo>(
           table_name: 'diwan_copy_to',
           fromJson: DiwanCopyTo.fromJson,
           context: Get.context!,
@@ -166,20 +167,33 @@ class WorkflowController extends GetxController
         [];
     Get.log('myWFDiwanCopyTo: ' + (myWFDiwanCopyTo).toString());
     if (myWFDiwanCopyTo.isNotEmpty) {
+      String _idsStr = '(';
+
       List<int> diwan_id_copy_to_list = [];
       for (var a1 in myWFDiwanCopyTo) {
         diwan_id_copy_to_list.add(a1.diwanId ?? -1);
+        if (diwan_id_copy_to_list.length > 1) _idsStr += ',';
+        _idsStr += a1.diwanId.toString();
       }
-
-      mainMyWFDiwanTranseerToMyList = await SupaApi.get_Table_List<Diwan>(
+      _idsStr += ')';
+      mainMyWFDiwanTranseerToMyList = await FastAPI_Api.get_Table<Diwan>(
         context: Get.context!,
         pageNumber: 1,
         pageSize: 200,
         table_name: 'workflow',
-        coloumList: diwan_id_copy_to_list,
-        idColuomn: 'diwan_id',
+        // coloumList: diwan_id_copy_to_list.toSet(),
+        query_string: 'diwan_id in ${_idsStr}',
         fromJson: Diwan.fromJson,
       );
+      // await FastAPI_Api.get_Table_List<Diwan>(
+      //   context: Get.context!,
+      //   pageNumber: 1,
+      //   pageSize: 200,
+      //   table_name: 'workflow',
+      //   coloumList: diwan_id_copy_to_list,
+      //   idColuomn: 'diwan_id',
+      //   fromJson: Diwan.fromJson,
+      // );
 
       if ((mainMyWFDiwanTranseerToMyList ?? []).isNotEmpty) {
         for (var a1 in mainMyWFDiwanTranseerToMyList!) {
@@ -269,23 +283,42 @@ class WorkflowController extends GetxController
 
   Future prepareWorkCountsStatisticsPerDayData() async {
     startLoading(Get.context!, willPop: true);
-    worksPerDayData = await SupaApi.get_diwan_static_work_by_day(
+    worksPerDayData = await FastAPI_Api.get_work_per_day(
       context: Get.context!,
-      function_name: 'get_records_by_date',
+      table_name: 'workflow',
+      date_col: 'created_at',
+      email_col: 'by_email',
     );
+
+    // await SupaApi.get_diwan_static_work_by_day(
+    //   context: Get.context!,
+    //   function_name: 'get_records_by_date',
+    // );
     update();
     pop(Get.context!);
   }
 
   Future prepareChartData() async {
     startLoading(Get.context!, willPop: true);
-    usersCountStatics = await SupaApi.get_diwan_static_data(
+    // usersCountStatics = await SupaApi.get_diwan_static_data(
+    //   context: Get.context!,
+    //   function_name: 'diwan_users_counts',
+    // );
+    // diwanTypeCountStatics = await SupaApi.get_diwan_static_data(
+    //   context: Get.context!,
+    //   function_name: 'get_diwan_types_count',
+    // );
+    usersCountStatics = await FastAPI_Api.get_work_statistics(
       context: Get.context!,
-      function_name: 'diwan_users_counts',
+      table_name: 'workflow',
+      group_col: 'by_email',
+      filter_condition: 'active = true',
     );
-    diwanTypeCountStatics = await SupaApi.get_diwan_static_data(
+    diwanTypeCountStatics = await FastAPI_Api.get_work_statistics(
       context: Get.context!,
-      function_name: 'get_diwan_types_count',
+      table_name: 'workflow',
+      group_col: 'diwan_type',
+      filter_condition: 'active = true',
     );
 
     ordinalDataListRegions = [];
@@ -318,10 +351,10 @@ class WorkflowController extends GetxController
       if (fileAttachment?.url != null &&
           fileAttachment?.uploadFileUri != 'error' &&
           (fileAttachment?.uploadFileUri ?? '').isEmpty) {
-        fileAttachment?.uploadFileUri = await SupaApi.upload_files_supa(
-          'west-irbid/workflow',
-          fileAttachment?.url ?? '',
-          'workflow',
+        fileAttachment?.uploadFileUri = await FastAPI_Api.upload_file(
+          directory_name_to_save: 'west-irbid/workflow',
+          filePath: fileAttachment?.url ?? '',
+          // 'workflow',
         );
       }
       isUploaded = true;
@@ -333,7 +366,7 @@ class WorkflowController extends GetxController
   }
 
   Future<void> get_workflow(BuildContext context) async {
-    List<Diwan>? myDiwanItems = await SupaApi.get_Table<Diwan>(
+    List<Diwan>? myDiwanItems = await FastAPI_Api.get_Table<Diwan>(
       context: context,
       table_name: 'workflow',
       query: {'from_id': ConstantsData.currentUser?.id ?? -1},
@@ -348,11 +381,12 @@ class WorkflowController extends GetxController
     BuildContext context, {
     required Diwan workFlowData,
   }) async {
-    var resp = await SupaApi.insert_table<Diwan>(
+    var resp = await FastAPI_Api.insertUpdateTable<Diwan>(
       table_name: 'workflow',
-      toJson: workFlowData.toJson(),
+      query: workFlowData.toJson(),
       context: context,
       fromJson: Diwan.fromJson,
+      isInsert: true,
     );
     if (resp.$2 == true) {
       show_snackBar(context, Colors.green, 'diwanAddedSuccessfully'.tr);
@@ -364,13 +398,22 @@ class WorkflowController extends GetxController
     BuildContext context, {
     required CaseProcedure caseObj,
   }) async {
-    var resp = await SupaApi.insertUpdateCaseProcedure(
+    CaseProcedure? reternObj;
+
+    var resp = await FastAPI_Api.insertUpdateTable<CaseProcedure>(
       context: context,
-      caseProcedureObj: caseObj,
+      isInsert: true,
+      // objId: setting.id,
+      query: caseObj.toJson(),
+      table_name: 'case_procedurs',
+      fromJson: CaseProcedure.fromJson,
     );
+
+    // pop(cont ext);
     if (resp.$2 == true) {
       show_snackBar(context, Colors.green, 'caseAddedSuccessfully'.tr);
     }
+    reternObj = resp.$1;
     return resp.$1;
   }
 

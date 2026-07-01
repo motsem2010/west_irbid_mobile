@@ -10,6 +10,7 @@ import 'package:west_irbid_mobile/modules/diwan_details/diwan_details_controller
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/widgets/custom_text_field.dart';
 import 'package:west_irbid_mobile/widgets/custome_file_scan_attachmet.dart';
@@ -375,10 +376,12 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                                       'error') {
                                 try {
                                   p0.updateFileAttachment?.uploadFileUri =
-                                      await SupaApi.upload_files_supa(
-                                        'west-irbid/diwan',
-                                        p0.updateFileAttachment?.url ?? '',
-                                        p0.updateFileAttachment?.fileName ?? '',
+                                      await FastAPI_Api.upload_file(
+                                        directory_name_to_save:
+                                            'west-irbid/diwan',
+                                        filePath:
+                                            p0.updateFileAttachment?.url ?? '',
+                                        // fileName: p0.updateFileAttachment?.fileName ?? '',
                                       );
                                 } catch (e) {
                                   pop(context);
@@ -424,12 +427,8 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                                     .trim();
                               }
 
-                              updateDiwanObj?.updated_by = SupaApi
-                                  .supaInstCLient
-                                  .auth
-                                  .currentSession
-                                  ?.user
-                                  .email;
+                              updateDiwanObj?.updated_by =
+                                  ConstantsData.currentUser?.userEmail;
                               updateDiwanObj?.is_updated = true;
 
                               Diwan? c = await p0.insert_update_diwan(
@@ -479,12 +478,10 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                                       text: 'ok'.tr,
                                       onPressed: () async {
                                         Diwan? deleteDiwanObj = p0.diwanObj;
-                                        deleteDiwanObj?.updated_by = SupaApi
-                                            .supaInstCLient
-                                            .auth
-                                            .currentSession
-                                            ?.user
-                                            .email;
+                                        deleteDiwanObj?.updated_by =
+                                            ConstantsData
+                                                .currentUser
+                                                ?.userEmail;
                                         deleteDiwanObj?.is_updated = true;
                                         deleteDiwanObj?.update_actions =
                                             'Delete record';
@@ -663,17 +660,19 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                           if (p0.procedureAttachment?.url != null &&
                               p0.procedureAttachment?.uploadFileUri !=
                                   'error') {
-                            p0.procedureAttachment?.uploadFileUri =
-                                await SupaApi.upload_files_supa(
+                            p0
+                                .procedureAttachment
+                                ?.uploadFileUri = await FastAPI_Api.upload_file(
+                              directory_name_to_save:
                                   'west-irbid/diwan_procedure',
-                                  p0.procedureAttachment!.url!,
-                                  p0.procedureAttachment!.fileName!,
-                                );
+                              filePath: p0.procedureAttachment!.url!,
+                              // fileName: p0.procedureAttachment!.fileName!,
+                            );
                           }
 
                           if (p0.forwardToDepartment == true &&
                               p0.transferToUser != null) {
-                            await SupaApi.insert_table<DiwanCopyTo>(
+                            await FastAPI_Api.insert_Table<DiwanCopyTo>(
                               context: context,
                               table_name: 'diwan_copy_to',
                               fromJson: DiwanCopyTo.fromJson,
@@ -706,12 +705,7 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
                             forwardToEmpId: p0.transferToUser?.id,
                             forwardToEmpName: p0.transferToUser?.userName,
                             attachment: p0.procedureAttachment?.uploadFileUri,
-                            by_user_email: SupaApi
-                                .supaInstCLient
-                                .auth
-                                .currentSession
-                                ?.user
-                                .email,
+                            by_user_email: ConstantsData.currentUser?.userEmail,
                             byUsername: ConstantsData.currentUser?.userName,
                             caseType: 'ديوان',
                             caseTypeId: 2,
@@ -727,20 +721,31 @@ class DiwanDetailsView extends GetView<DiwanDetailsController> {
 
                           p0.diwanObj?.status = p0.selection.first;
 
-                          List<Map<String, dynamic>> copies = await SupaApi
-                              .supaInstCLient
-                              .from('diwan_copy_to')
-                              .select()
-                              .eq('diwan_id', p0.diwanObj?.id ?? -1)
-                              .eq(
-                                'forward_to_user_id',
-                                ConstantsData.currentUser?.id ?? -1,
-                              );
+                          List<DiwanCopyTo> copies =
+                              await FastAPI_Api.get_Table<DiwanCopyTo>(
+                                table_name: 'diwan_copy_to',
+                                context: context,
+                                fromJson: DiwanCopyTo.fromJson,
+                                pageNumber: 1,
+                                pageSize: 20,
+                                query_string:
+                                    'diwan_id = ${p0.diwan_id} AND forward_to_user_id = ${ConstantsData.currentUser?.id}',
+                              ) ??
+                              [];
+
+                          // .supaInstCLient
+                          // .from('diwan_copy_to')
+                          // .select()
+                          // .eq('diwan_id', p0.diwanObj?.id ?? -1)
+                          // .eq(
+                          //   'forward_to_user_id',
+                          //   ConstantsData.currentUser?.id ?? -1,
+                          // );
 
                           if (copies.isNotEmpty) {
-                            List<DiwanCopyTo> diwanCopyToItems = copies
-                                .map((e) => DiwanCopyTo.fromJson(e))
-                                .toList();
+                            List<DiwanCopyTo> diwanCopyToItems = copies;
+                            // .map((e) => DiwanCopyTo.fromJson(e))
+                            // .toList();
                             if (diwanCopyToItems.isNotEmpty &&
                                 diwanCopyToItems.last.actionDone == false) {
                               // DiwanCopyTo lastCopy = diwanCopyToItems.last;

@@ -418,33 +418,33 @@ class HelperMethods {
     return result;
   }
 
-  static Future<void> get_user_roles(BuildContext context) async {
-    debugPrint(SupaApi.supaUser?.email.toString());
-    debugPrint(
-      SupaApi.supaInstCLient.auth.currentSession?.user.email.toString() ??
-          '' + ' From auth',
-    );
-    if (ConstantsData.rolesList.isEmpty) {
-      List<RoleModel>? roles = await SupaApi.get_roles_list(context: context);
-      log((roles ?? []).length.toString());
-    }
+  // static Future<void> get_user_roles(BuildContext context) async {
+  //   debugPrint(SupaApi.supaUser?.email.toString());
+  //   debugPrint(
+  //     SupaApi.supaInstCLient.auth.currentSession?.user.email.toString() ??
+  //         '' + ' From auth',
+  //   );
+  //   if (ConstantsData.rolesList.isEmpty) {
+  //     List<RoleModel>? roles = await SupaApi.get_roles_list(context: context);
+  //     log((roles ?? []).length.toString());
+  //   }
 
-    if ((ConstantsData.rolesList).isNotEmpty &&
-        SupaApi.supaInstCLient.auth.currentSession?.user.email != null) {
-      await SupaApi.get_roles_for_user(
-        context: context,
-        user_email:
-            SupaApi.supaInstCLient.auth.currentSession?.user.email.toString() ??
-            '',
-      );
-    } else {
-      HelperMethods.dialogView(
-        context: context,
-        message: 'No roles return from server or user email is null',
-        type: 1,
-      );
-    }
-  }
+  //   if ((ConstantsData.rolesList).isNotEmpty &&
+  //       SupaApi.supaInstCLient.auth.currentSession?.user.email != null) {
+  //     await SupaApi.get_roles_for_user(
+  //       context: context,
+  //       user_email:
+  //           SupaApi.supaInstCLient.auth.currentSession?.user.email.toString() ??
+  //           '',
+  //     );
+  //   } else {
+  //     HelperMethods.dialogView(
+  //       context: context,
+  //       message: 'No roles return from server or user email is null',
+  //       type: 1,
+  //     );
+  //   }
+  // }
 
   // static List<String> readCSVFile(String filePath) {
   //   File file = File(filePath);

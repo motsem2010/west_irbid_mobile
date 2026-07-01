@@ -6,7 +6,6 @@ import 'package:west_irbid_mobile/models/user_model.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/home_dashboard_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
-import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/supa_auth_api.dart';
 import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
@@ -127,8 +126,8 @@ class LoginController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
-      await AuthController().forgotPassword(emailController.text.trim());
+      // isLoading.value = true;
+      // await AuthController().forgotPassword(emailController.text.trim());
       showToast(
         'تم إرسال رابط إعادة تعيين كلمة المرور',
         backgroundColor: Colors.green,

@@ -8,7 +8,8 @@ import 'package:west_irbid_mobile/models/diwan_classes.dart';
 import 'package:west_irbid_mobile/models/diwan_wf_procedures_model.dart';
 import 'package:west_irbid_mobile/models/user_model.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
-import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
+// import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class DiwanDetailsController extends GetxController {
@@ -93,7 +94,7 @@ class DiwanDetailsController extends GetxController {
     super.onReady();
     if (ConstantsData.listUsers.isEmpty) {
       ConstantsData.listUsers =
-          await SupaApi.get_Table<UserModel>(
+          await FastAPI_Api.get_Table<UserModel>(
             context: Get.context!,
             query: {},
             pageNumber: 1,
@@ -108,7 +109,7 @@ class DiwanDetailsController extends GetxController {
   getProceduresList(int? diwanId) async {
     if (diwanId == null) return;
     caseProceduresList =
-        await SupaApi.get_Table<DiwanWFProcedure>(
+        await FastAPI_Api.get_Table<DiwanWFProcedure>(
           context: Get.context!,
           query: {'diwan_id': diwanId},
           pageNumber: 1,
@@ -125,9 +126,11 @@ class DiwanDetailsController extends GetxController {
     required Diwan diwanObj,
     bool isInsert = true,
   }) async {
-    var resp = await SupaApi.insertUpdateDiwan(
+    var resp = await FastAPI_Api.insertUpdateTable<Diwan>(
       context: context,
-      diwanObj: diwanObj,
+      query: diwanObj.toJson(),
+      table_name: 'diwan',
+      fromJson: Diwan.fromJson,
       isInsert: isInsert,
     );
     if (resp.$2 == true) {
@@ -140,11 +143,12 @@ class DiwanDetailsController extends GetxController {
     BuildContext context, {
     required DiwanWFProcedure procedureWFObj,
   }) async {
-    var resp = await SupaApi.insert_table<DiwanWFProcedure>(
+    var resp = await FastAPI_Api.insertUpdateTable<DiwanWFProcedure>(
       table_name: 'diwan_wf_procedurs',
       fromJson: DiwanWFProcedure.fromJson,
-      toJson: procedureWFObj.toJson(),
+      query: procedureWFObj.toJson(),
       context: context,
+      isInsert: true,
     );
     if (resp.$2 == true) {
       show_snackBar(context, Colors.green, 'caseAddedSuccessfully'.tr);
@@ -158,12 +162,12 @@ class DiwanDetailsController extends GetxController {
     procedureDepartmentController.text = '';
 
     if (diwanId != null && diwanObj == null) {
-      List<Diwan>? result = await SupaApi.get_Table<Diwan>(
+      List<Diwan>? result = await FastAPI_Api.get_Table<Diwan>(
         context: Get.context!,
         query: {'id': diwanId.toString()},
         pageNumber: 1,
         pageSize: 1,
-        table_name: 'diwan_wf',
+        table_name: 'diwan',
         fromJson: Diwan.fromJson,
       );
       if (result != null && result.isNotEmpty) {

@@ -25,7 +25,7 @@ import 'package:west_irbid_mobile/services_utils/custom_apis_methods.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:uuid/uuid.dart';
 
-class SupaApi {
+class SupaApiX {
   static final SupabaseClient supaInstCLient = Supabase.instance.client;
   static User? supaUser;
   static Future<User?> login(String email, String password) async {

@@ -6,6 +6,7 @@ import 'package:west_irbid_mobile/modules/diwan_details/diwan_details_view.dart'
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/helper_methods.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
+import 'package:west_irbid_mobile/services_utils/supa_fastAPI_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class DiwanCardItem extends StatelessWidget {
@@ -120,10 +121,13 @@ class DiwanCardItem extends StatelessWidget {
                                 return;
                               }
                               startLoading(context, willPop: true);
-                              diwanObj.supaSignedUrl =
-                                  await SupaApi.getPublicUrl(
-                                    diwanObj.attachment ?? "",
-                                  );
+                              // diwanObj.supaSignedUrl
+                              var res = await FastAPI_Api.getPublicUrl(
+                                diwanObj.attachment ?? "",
+                              );
+                              if (res.$2 == true) {
+                                diwanObj.supaSignedUrl = res.$1;
+                              }
                               pop(context);
                               if (diwanObj.supaSignedUrl != null) {
                                 HelperMethods.lanch_attachment(

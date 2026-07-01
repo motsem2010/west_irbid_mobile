@@ -222,12 +222,7 @@ class CreateWorkflowView extends StatelessWidget {
                                 diwan_action: controller.diwan_action,
                                 attachment:
                                     controller.fileAttachment?.uploadFileUri,
-                                byEmail: SupaApi
-                                    .supaInstCLient
-                                    .auth
-                                    .currentSession
-                                    ?.user
-                                    .email,
+                                byEmail: ConstantsData.currentUser?.userEmail,
                               );
                               Diwan? c = await controller.insert_workflow(
                                 context,
