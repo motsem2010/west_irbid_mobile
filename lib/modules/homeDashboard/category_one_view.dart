@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CategoryOneView extends StatelessWidget {
-  const CategoryOneView({super.key});
+class NewsView extends StatelessWidget {
+  const NewsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class CategoryOneView extends StatelessWidget {
           backgroundColor: const Color(0xFF3B82F6),
           elevation: 0,
           title: const Text(
-            'الفئة الأولى',
+            'أخبار البلدية',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

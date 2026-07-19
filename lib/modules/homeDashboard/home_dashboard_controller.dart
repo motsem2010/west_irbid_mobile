@@ -28,7 +28,7 @@ class HomeDashboardController extends GetxController {
 
   // Navigate to category page 1
   void navigateToCategoryOne() {
-    Get.to(() => const CategoryOneView());
+    Get.to(() => const NewsView());
   }
 
   // Navigate to category page 2
