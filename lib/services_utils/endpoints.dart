@@ -27,6 +27,8 @@ class Endpoints {
   static const String work_statistics = '/work_statistics';
   static const String get_file_url = '/get_file_url';
   static const String insert_diwan_with_copyto = '/insert_diwan_with_copyto';
+  static const String checkin = '/checkin';
+  static const String checkout = '/checkout';
 
   // static String get currentLanguage {
   //   return Settings.language.runtimeType == ArLanguage ? 'lang=ar' : 'lang=en';

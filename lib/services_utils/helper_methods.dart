@@ -59,7 +59,7 @@ class HelperMethods {
   }
 
   static Future<Attachment?> getFileAttachment(context, int? maxLeng) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'pdf', 'doc', 'png', 'jpeg', 'gif', 'tiff'],
     );
@@ -85,7 +85,7 @@ class HelperMethods {
   }
 
   static Future<String?> getSingleFile(context) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.pickFiles(
       allowMultiple: false,
       // allowedExtensions: ['jpg', 'pdf', 'doc', 'png', 'jpeg', 'gif', 'tiff'],
     );
@@ -414,7 +414,7 @@ class HelperMethods {
   }
 
   static Future<String?> selectFolderLocation() async {
-    final result = await FilePicker.platform.getDirectoryPath();
+    final result = await FilePicker.getDirectoryPath();
     return result;
   }
 

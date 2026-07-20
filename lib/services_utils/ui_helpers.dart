@@ -61,14 +61,29 @@ coolAlert({
   lottie,
   String? text,
   required CoolAlertType type,
+  Function()? onTap,
+  bool showCancelBtn = false,
+  bool dismissible = true,
+  String? title,
+  String? cancelText,
+  String? confirmText,
+  Color? confirmButtonColor,
+  Color? bgColor,
 }) {
   CoolAlert.show(
-    width: 200,
     context: context,
-    title: 'error'.tr,
     type: type,
+    closeOnConfirmBtnTap: onTap == null,
     lottieAsset: lottie,
+    title: title ?? 'o  k'.tr,
     text: text,
+    barrierDismissible: dismissible,
+    showCancelBtn: showCancelBtn,
+    cancelBtnText: cancelText ?? 'cancel'.tr,
+    confirmBtnText: confirmText ?? 'confirm'.tr,
+    onConfirmBtnTap: onTap,
+    confirmBtnColor: confirmButtonColor ?? Color(0xFF3085D6),
+    backgroundColor: bgColor ?? Color(0xFF515C6F),
   );
 }
 

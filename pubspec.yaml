@@ -37,7 +37,7 @@ dependencies:
   get: ^4.6.5
   get_storage: ^2.1.1
   flutter_svg: ^2.0.7
-  google_fonts: ^5.1.0
+  google_fonts: 
   cool_alert: #^2.0.1
   url_launcher: #^6.1.12
   flutter_image_slideshow: ^0.1.6
@@ -72,6 +72,7 @@ dependencies:
   flutter_zkteco: ^1.2.0
   flutter_gemini: ^3.0.0
   firebase_core: ^4.3.0
+  geolocator: ^14.0.2
   flutter_local_notifications: ^19.5.0
   firebase_messaging: ^16.1.0
   web_socket: ^1.0.1
