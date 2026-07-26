@@ -81,7 +81,7 @@ class Main {
 
     // if (!withFireBase && devicePlatform == PlatformIds.huawei)
     //   await NotificationServiceHuawei.start();
-
+    Hive.init('');
     await TokenDB.openTokenBox();
 
     // if (enableBiometricLogic) await BiometricDB.openBiometricBox();
