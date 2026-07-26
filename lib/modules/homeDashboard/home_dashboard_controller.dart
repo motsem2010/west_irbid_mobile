@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:west_irbid_mobile/models/departments.dart';
 import 'package:west_irbid_mobile/models/diwan_classes.dart';
 import 'package:west_irbid_mobile/models/user_model.dart';
+import 'package:west_irbid_mobile/modules/attendance_actions/attendance_actions_view.dart';
+import 'package:west_irbid_mobile/modules/attendance_actions/attendance_binding.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_two_view.dart';
 import 'package:west_irbid_mobile/modules/diwan/diwan_view.dart';
@@ -33,6 +35,10 @@ class HomeDashboardController extends GetxController {
   // Navigate to category page 1
   void navigateToCategoryOne() {
     Get.to(() => const CategoryOneView());
+  }
+
+  void navigateToAttendance() {
+    Get.to(() => AttendanceActionsView(), binding: AttendanceBinding());
   }
 
   // Navigate to category page 2

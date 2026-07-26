@@ -59,7 +59,7 @@ class HelperMethods {
   }
 
   static Future<Attachment?> getFileAttachment(context, int? maxLeng) async {
-    FilePickerResult? result = await FilePicker.pickFiles(
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'pdf', 'doc', 'png', 'jpeg', 'gif', 'tiff'],
     );
@@ -68,24 +68,25 @@ class HelperMethods {
       Get.log(
         '${result.files.single.path.toString()} with size=${result.files.single.size.toString()} ',
       );
-      if (result.files.single.size / (1024 * 1000) < (maxLeng ?? 1))
+      if (result.files.single.size / (1024 * 1000) < (maxLeng ?? 1)) {
         return Attachment(
           fileName: result.files.single.name,
           size: result.files.single.size / 1024,
           url: result.files.single.path,
         );
-      else
+      } else {
         alert(
           context,
           CoolAlertType.error,
           'toLargefileOver20'.tr + ' ${maxLeng ?? 1}',
         );
+      }
       // File file = File(result.files.single.path);
     }
   }
 
   static Future<String?> getSingleFile(context) async {
-    FilePickerResult? result = await FilePicker.pickFiles(
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       // allowedExtensions: ['jpg', 'pdf', 'doc', 'png', 'jpeg', 'gif', 'tiff'],
     );
@@ -414,7 +415,7 @@ class HelperMethods {
   }
 
   static Future<String?> selectFolderLocation() async {
-    final result = await FilePicker.getDirectoryPath();
+    final result = await FilePicker.platform.getDirectoryPath();
     return result;
   }
 

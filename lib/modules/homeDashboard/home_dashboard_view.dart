@@ -153,11 +153,12 @@ class HomeDashboardView extends StatelessWidget {
                   children: [
                     // Category Button 1
                     _buildCategoryCard(
-                      title: 'الفئة الأولى',
-                      subtitle: 'الوصول إلى الصفحة الأولى',
-                      icon: Icons.dashboard_outlined,
+                      title: 'إجراءات الحضور',
+                      subtitle: 'الوصول إلى إجراءات الحضور',
+                      icon: Icons.person,
                       color: const Color(0xFF3B82F6),
-                      onTap: controller.navigateToCategoryOne,
+                      onTap: controller.navigateToAttendance,
+                      // navigateToCategoryOne,
                     ),
 
                     // Category Button 2
