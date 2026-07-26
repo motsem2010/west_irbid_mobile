@@ -75,6 +75,23 @@ class AuthController {
     }
   }
 
+  Future<void> registerToken(String token) async {
+    try {
+      // لازم ينعمل الها
+      // await CustomApi.SpeedApi(
+      //     disableTest: true,
+      //     path: Endpoints.mobile + Endpoints.token,
+      //     bodyParameters: {
+      //       "DeviceID": token,
+      //     },
+      //     isPost: true);
+      // await AuthApi.registerToken(token);
+      debugPrint("done");
+    } catch (e, s) {
+      print(s);
+    }
+  }
+
   Future forgotPassword(String email) async {
     await _supabaseInstance.auth.resetPasswordForEmail(email);
     Get.snackbar(

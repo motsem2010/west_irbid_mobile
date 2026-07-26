@@ -1,13 +1,24 @@
+import 'dart:io' show Platform;
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:west_irbid_mobile/modules/login/login_view.dart';
+import 'package:west_irbid_mobile/services_utils/DB/token_db.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
+import 'package:west_irbid_mobile/services_utils/notification_service.dart';
 import 'package:west_irbid_mobile/services_utils/settings_service.dart';
 import 'package:west_irbid_mobile/services_utils/translation_service.dart';
+
+enum PlatformIds { android, huawei, ios, web }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,10 +33,117 @@ void main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3N3aWxpempyYnhwbXlpaGZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc2NTI4MTEsImV4cCI6MjAzMzIyODgxMX0.-wOtD6yP7bW0UcQDLMJscyMDi7HuzfI-ZU8odn_BU8o',
   );
+  // await TokenDB.openTokenBox();
+  await Main.initializeApp();
   await GetStorage.init();
   // Gemini.init(apiKey: 'AIzaSyC693wVM6XBue1WiMiy2RM1fUSdZM1jlxo');
 
   runApp(const MyApp());
+}
+
+//android=0, huawe=1, ios=2, web=3
+
+class Main {
+  static bool withOutBadge = true;
+  static bool? withOutUpdate = true;
+
+  static String? testUsername;
+  static String? testPassword;
+  static bool showNotification = true;
+  static bool showChat = true;
+  static PlatformIds? devicePlatform;
+  static bool withFirebase = true;
+  static void currentPlatform() {
+    if (Main.devicePlatform == null) {
+      if (Platform.isIOS) {
+        Main.devicePlatform = PlatformIds.ios;
+        return;
+      } else if (Platform.isAndroid) {
+        Main.devicePlatform = PlatformIds.android;
+        return;
+      } else
+        Main.devicePlatform = PlatformIds.web;
+    }
+  }
+
+  static Future<void> initializeApp({
+    bool withFireBase = true,
+    FirebaseOptions? firebaseOptions,
+  }) async {
+    if (Main.devicePlatform == null) currentPlatform();
+    Main.withFirebase = withFireBase;
+    if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (withFireBase && Main.devicePlatform != PlatformIds.huawei)
+      await _initializeFirebase(firebaseOptions);
+
+    // if (!withFireBase && devicePlatform == PlatformIds.huawei)
+    //   await NotificationServiceHuawei.start();
+
+    await TokenDB.openTokenBox();
+
+    // if (enableBiometricLogic) await BiometricDB.openBiometricBox();
+    // if (enableAppType) await AppTypeDB.openAppTypeBox();
+    // if (!kDebugMode) {
+    //   debugPrint = (String? message, {int? wrapWidth}) {};
+    // } else {
+    //   UserDB.saveUserUsername(Main.testUsername);
+    //   UserDB.saveUserPassword(Main.testPassword);
+    // }
+    print("----- Firebase / Huawei Token -----");
+    // Main.devicePlatform == PlatformIds.huawei
+    //     ? print(NotificationServiceHuawei.huaweiToken)
+    //     : print(NotificationService.firebaseToken);
+    print(NotificationService.firebaseToken);
+  }
+
+  static Future<void> _initializeFirebase(
+    FirebaseOptions? firebaseOptions,
+  ) async {
+    try {
+      await Firebase.initializeApp(options: firebaseOptions);
+      await FirebaseMessaging.instance.requestPermission();
+      final _firebaseMessaging = FirebaseMessaging.instance;
+      if (Main.devicePlatform == PlatformIds.ios) {
+        var apnsToken = await _firebaseMessaging.getAPNSToken();
+        if (apnsToken == null) {
+          await Future.delayed(const Duration(seconds: 3));
+          apnsToken = await _firebaseMessaging.getAPNSToken();
+        }
+      }
+      NotificationService.firebaseToken = await _firebaseMessaging.getToken();
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    } catch (e) {
+      NotificationService.firebaseToken = "noToken";
+      print(e);
+      print("Error initializing Firebase");
+    }
+  }
+
+  @pragma("vm:entry-point")
+  static Future<void> firebaseMessagingBackgroundHandler(
+    RemoteMessage message,
+  ) async {
+    // await Hive.initFlutter();
+    await TokenDB.openTokenBox();
+    TokenDB.saveAccessNotification("false");
+    print("print data :" + message.data.toString());
+    print(
+      "print  :" +
+          message.data["navigation"].toString() +
+          "  ${message.data["navigation"] == null}",
+    );
+
+    if (message.data["navigation"] == null) return;
+
+    // await GeneralController.read(NavigatorKey.instance.currentContext!)
+    //     .getMailBoxCount();
+    // if (Main.schoolMessageBadge)
+    //   await GeneralController.read(NavigatorKey.instance.currentContext!)
+    //       .getSchoolMsgCount();
+  }
 }
 
 class MyApp extends StatelessWidget {
