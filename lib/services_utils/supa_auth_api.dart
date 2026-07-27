@@ -92,6 +92,37 @@ class AuthController {
     }
   }
 
+  static Future<void> registerTokenSupa({
+    required String deviceId,
+    required String token,
+    String? userId,
+    String? userEmail,
+  }) async {
+    try {
+      await SupaApi.get_PRCParam(
+        function_name: 'register_token',
+        params: {
+          'p_user_id': userId,
+          'p_token': token,
+          'p_device_id': deviceId,
+          'p_user_email': userEmail,
+        },
+      );
+      // لازم ينعمل الها
+      // await CustomApi.SpeedApi(
+      //     disableTest: true,
+      //     path: Endpoints.mobile + Endpoints.token,
+      //     bodyParameters: {
+      //       "DeviceID": token,
+      //     },
+      //     isPost: true);
+      // await AuthApi.registerToken(token);
+      debugPrint("done");
+    } catch (e, s) {
+      print(s);
+    }
+  }
+
   Future forgotPassword(String email) async {
     await _supabaseInstance.auth.resetPasswordForEmail(email);
     Get.snackbar(

@@ -1,21 +1,24 @@
-import 'dart:io' show Platform;
+import 'dart:io' show Platform, Directory;
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
+// import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:west_irbid_mobile/modules/login/login_view.dart';
 import 'package:west_irbid_mobile/services_utils/DB/token_db.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/notification_service.dart';
 import 'package:west_irbid_mobile/services_utils/settings_service.dart';
+import 'package:west_irbid_mobile/services_utils/supa_auth_api.dart';
 import 'package:west_irbid_mobile/services_utils/translation_service.dart';
 
 enum PlatformIds { android, huawei, ios, web }
@@ -81,7 +84,11 @@ class Main {
 
     // if (!withFireBase && devicePlatform == PlatformIds.huawei)
     //   await NotificationServiceHuawei.start();
-    Hive.init('');
+    // var path = Directory.current.path;
+    Hive.initFlutter();
+    // init(path)
+    // ..registerAdapter(adapter);
+    // Hive.init('');
     await TokenDB.openTokenBox();
 
     // if (enableBiometricLogic) await BiometricDB.openBiometricBox();
@@ -114,11 +121,36 @@ class Main {
         }
       }
       NotificationService.firebaseToken = await _firebaseMessaging.getToken();
+      await _registerToken();
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     } catch (e) {
       NotificationService.firebaseToken = "noToken";
       print(e);
       print("Error initializing Firebase");
+    }
+  }
+
+  static _registerToken() async {
+    if (NotificationService.firebaseToken != null) {
+      AndroidDeviceInfo? _deviceInfo;
+      try {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        if (Platform.isAndroid) {
+          _deviceInfo = await deviceInfo.androidInfo;
+          // _deviceInfo.serialNumber.toString();
+        }
+        if ((_deviceInfo?.serialNumber ?? '').isNotEmpty &&
+            (NotificationService.firebaseToken ?? '').isNotEmpty) {
+          await AuthController.registerTokenSupa(
+            deviceId: _deviceInfo?.serialNumber.toString() ?? 'no',
+            token: NotificationService.firebaseToken ?? '',
+            userId: ConstantsData.currentUser?.id.toString(),
+            userEmail: ConstantsData.currentUser?.userEmail,
+          );
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     }
   }
 

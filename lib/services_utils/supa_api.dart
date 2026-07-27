@@ -300,6 +300,29 @@ class SupaApi {
     }
   }
 
+  static Future<void> get_PRCParam({
+    required String function_name,
+    required Map<String, dynamic>? params,
+    // Pass a fromJson function
+  }) async {
+    try {
+      List<Map<String, dynamic>> x = await supaInstCLient.rpc(
+        function_name,
+        params: params,
+      );
+
+      Get.log(x.toString());
+    } catch (e) {
+      Get.log(e.toString());
+
+      // show_snackBar(
+      //   context,
+      //   ConstantsData.absentClr,
+      //   'Error to retrieve PRC ${function_name}'.tr,
+      // );
+    } finally {}
+  }
+
   static Future<int?> get_PRC_insert_wf_diwan_copyto({
     required BuildContext context,
     required String function_name,
