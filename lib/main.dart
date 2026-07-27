@@ -85,7 +85,7 @@ class Main {
     // if (!withFireBase && devicePlatform == PlatformIds.huawei)
     //   await NotificationServiceHuawei.start();
     // var path = Directory.current.path;
-    Hive.initFlutter();
+    await Hive.initFlutter();
     // init(path)
     // ..registerAdapter(adapter);
     // Hive.init('');
