@@ -42,20 +42,21 @@ class NotificationService {
       channelId,
       channelTitle,
       playSound: true,
-      channelShowBadge: true,
+      channelShowBadge: Main.withOutBadge,
       importance: notificationImportance,
       priority: notificationPriority,
       icon: 'app_icon',
     );
-    var iOSPlatformChannelSpecifics = DarwinNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
+    var iOSPlatformChannelSpecifics = new DarwinNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.show(
-      id: notificationId,
-      title: notificationTitle,
-      body: notificationContent,
+      notificationId,
+      notificationTitle,
+      notificationContent,
+      platformChannelSpecifics,
       payload: payload,
     );
   }
@@ -107,7 +108,7 @@ class NotificationService {
       TokenDB.saveAccessNotification('false');
     });
     flutterLocalNotificationsPlugin.initialize(
-      settings: initializationSettings,
+      initializationSettings,
       onDidReceiveNotificationResponse: (payload) async {
         navigateNotification(remoteMessage);
         print('onDidReceiveNotificationResponse');
@@ -193,6 +194,6 @@ class NotificationService {
   }
 
   void cancelNotification(int Id) {
-    flutterLocalNotificationsPlugin.cancel(id: Id);
+    flutterLocalNotificationsPlugin.cancel(Id);
   }
 }

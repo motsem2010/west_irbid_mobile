@@ -122,6 +122,11 @@ class Main {
       }
       NotificationService.firebaseToken = await _firebaseMessaging.getToken();
       await _registerToken();
+      NotificationService().start(Get.context);
+      FirebaseMessaging.onMessage.listen((event) {
+        debugPrint("foreground Message :" + event.data.toString());
+        firebaseMessagingBackgroundHandler(event);
+      });
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     } catch (e) {
       NotificationService.firebaseToken = "noToken";
@@ -142,7 +147,7 @@ class Main {
         if ((_deviceInfo?.serialNumber ?? '').isNotEmpty &&
             (NotificationService.firebaseToken ?? '').isNotEmpty) {
           await AuthController.registerTokenSupa(
-            deviceId: _deviceInfo?.serialNumber.toString() ?? 'no',
+            deviceId: _deviceInfo?.host ?? '',
             token: NotificationService.firebaseToken ?? '',
             userId: ConstantsData.currentUser?.id.toString(),
             userEmail: ConstantsData.currentUser?.userEmail,
@@ -158,6 +163,12 @@ class Main {
   static Future<void> firebaseMessagingBackgroundHandler(
     RemoteMessage message,
   ) async {
+    NotificationService().showNotification(
+      message.hashCode,
+      message.notification?.title ?? '',
+      message.notification?.body ?? '',
+      "${message.notification?.body}**${message.notification?.body}",
+    );
     // await Hive.initFlutter();
     await TokenDB.openTokenBox();
     TokenDB.saveAccessNotification("false");

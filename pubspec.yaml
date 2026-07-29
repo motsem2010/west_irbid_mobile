@@ -71,7 +71,7 @@ dependencies:
   flutter_zkteco: ^1.2.0
   flutter_gemini: ^3.0.0
   firebase_core: ^4.12.1
-  flutter_local_notifications: ^20.1.0
+  flutter_local_notifications: ^18.0.1
   firebase_messaging: ^16.4.3
   hive: ^2.2.3
   hive_flutter:
