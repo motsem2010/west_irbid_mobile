@@ -177,7 +177,7 @@ pushNamed(String routeName, {String? args}) {
 }
 
 push(Widget page) {
-  NavigatorKey.instance.currentState!.push(
+  NavigatorKey.instance.currentState?.push(
     MaterialPageRoute(builder: (_) => page),
   );
 }

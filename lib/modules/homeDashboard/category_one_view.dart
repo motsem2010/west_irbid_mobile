@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NewsView extends StatelessWidget {
+  static String? id = "news_view";
   const NewsView({super.key});
 
   @override

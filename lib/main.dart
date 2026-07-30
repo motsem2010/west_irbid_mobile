@@ -128,6 +128,12 @@ class Main {
         firebaseMessagingBackgroundHandler(event);
       });
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onMessageOpenedApp.listen((event) {
+        debugPrint("onMessageOpenedApp Message :" + event.data.toString());
+        NotificationService.remoteMessage = event;
+        NotificationService().navigateNotification(event);
+        // TokenDB.saveAccessNotification('true');
+      });
     } catch (e) {
       NotificationService.firebaseToken = "noToken";
       print(e);

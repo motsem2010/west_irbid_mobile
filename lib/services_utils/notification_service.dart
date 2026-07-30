@@ -79,17 +79,17 @@ class NotificationService {
       }
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if (ConstantsData.currentUser == null) return;
+      // if (ConstantsData.currentUser == null) return;
 
       remoteMessage = message;
       int? notificationID;
       final String? navigationView = remoteMessage?.data['navigation'];
-      if (navigationView == 'news_view') {
-        Get.to(NewsView());
-      }
-      if (navigationView == 'news_view') {
-        Get.to(NewsView());
-      }
+      // if (navigationView == 'news_view') {
+      //   Get.to(NewsView());
+      // }
+      // if (navigationView == 'news_view') {
+      //   Get.to(NewsView());
+      // }
       // if (navigationView != null &&
       //     navigationView.trim() != "" &&
       //     Routes.routes[navigationView] != null)
@@ -110,8 +110,11 @@ class NotificationService {
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (payload) async {
+        print(
+          'onDidReceiveNotificationResponse' + remoteMessage!.data.toString(),
+        );
+
         navigateNotification(remoteMessage);
-        print('onDidReceiveNotificationResponse');
       },
     );
     FirebaseMessaging.instance.requestPermission(
@@ -123,19 +126,23 @@ class NotificationService {
   }
 
   Future<void> navigateNotification([RemoteMessage? remoteMessage]) async {
-    if (ConstantsData.currentUser == null) return;
-    if (remoteMessage == null)
-      remoteMessage =
-          remoteMessage ?? await FirebaseMessaging.instance.getInitialMessage();
+    // if (ConstantsData.currentUser == null) return;
+    // if (remoteMessage == null)
+    //   remoteMessage =
+    //       remoteMessage ?? await FirebaseMessaging.instance.getInitialMessage();
 
     if (remoteMessage != null) {
       // var generalController = GeneralController.read(
       //   NavigatorKey.instance.currentContext!,
       // );
-      final String? navigationView = remoteMessage.data['navigation'];
-      print(navigationView);
-      final String messageID = (remoteMessage.data['ID'] ?? "0").toString();
-
+      String? navigationView = remoteMessage.data['navigation'];
+      debugPrint(navigationView);
+      String messageID = (remoteMessage.data['id'] ?? "0").toString();
+      if (navigationView == 'news_view') {
+        //   generalController.initBlockName = navigationView;
+        //reload news view
+        push(NewsView());
+      }
       // if (navigationView == 'parents_notes_view' ||
       //     navigationView == 'bus_delay' ||
       //     navigationView == 'birthday_view') {
