@@ -1,6 +1,7 @@
-import 'package:eschool/eschool.dart';
-import 'package:eschool/src/views/publicViews/news/event_details_view.dart';
 import 'package:flutter/material.dart';
+import 'package:west_irbid_mobile/models/event_model.dart';
+import 'package:west_irbid_mobile/modules/news/event_details_view.dart';
+import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 
 class SingleNewsCard extends StatelessWidget {
   final Event? event;
@@ -10,20 +11,14 @@ class SingleNewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => push(
-        EventDetailsView(
-          event: event,
-        ),
-      ),
+      onTap: () => push(EventDetailsView(event: event)),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Container(
           width: MediaQuery.of(context).size.width * .8,
           padding: EdgeInsets.all(12.0),
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Color.fromRGBO(233, 233, 233, 1),
-            ),
+            border: Border.all(color: Color.fromRGBO(233, 233, 233, 1)),
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Column(
@@ -40,17 +35,13 @@ class SingleNewsCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20.0),
                       image: DecorationImage(
                         fit: BoxFit.fitHeight,
-                        image: NetworkImage(
-                          event!.imageUrl!,
-                        ),
+                        image: NetworkImage(event!.imageUrl!),
                       ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 5.0,
-              ),
+              SizedBox(height: 5.0),
               Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Column(
@@ -64,14 +55,14 @@ class SingleNewsCard extends StatelessWidget {
                         // color: Colors.red,
                       ),
                     ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
+                    SizedBox(height: 5.0),
                     Text(
                       event?.publishingDate ?? '',
-                      style:
-                          TextStyle(fontSize: 14.0, color: Colors.blueAccent),
-                    )
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
                   ],
                 ),
               ),

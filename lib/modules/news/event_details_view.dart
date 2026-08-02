@@ -1,11 +1,18 @@
-// import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:eschool/eschool.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:url_launcher/url_launcher.dart'
+    show launchUrl, LaunchMode, canLaunchUrl, launch;
 import 'package:west_irbid_mobile/models/event_model.dart';
+import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
+import 'package:west_irbid_mobile/widgets_cc/attachment_widget.dart';
 import 'package:west_irbid_mobile/widgets_cc/custom_view_n.dart';
+import 'package:west_irbid_mobile/widgets_cc/images_list_view.dart';
+import 'package:west_irbid_mobile/widgets_cc/newwork_image_view.dart';
 // import 'package:flutter_html/flutter_html.dart';
-// import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 
@@ -54,18 +61,20 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                 height: height * .2,
                 child: Center(
                   child: (widget.event?.imageList ?? []).isNotEmpty
-                      ? CarouselSlider.builder(
-                          itemCount: (widget.event?.imageList ?? []).length,
-                          options: CarouselOptions(
-                            autoPlay: true,
-                            viewportFraction: 1.0,
-                          ),
-                          itemBuilder:
-                              (
-                                BuildContext context,
-                                int itemIndex,
-                                int pageViewIndex,
-                              ) => GestureDetector(
+                      ? CarouselView(
+                          itemExtent: double.maxFinite,
+                          // itemCount: (widget.event?.imageList ?? []).length,
+                          // options: CarouselOptions(
+                          //   autoPlay: true,
+                          //   viewportFraction: 1.0,
+                          // ),
+                          children: [
+                            for (
+                              int i = 0;
+                              i < (widget.event?.attachments?.length ?? 0);
+                              i++
+                            )
+                              GestureDetector(
                                 onTap: () {
                                   if (widget.event!.imageList == null ||
                                       widget.event!.imageList!.isEmpty) {
@@ -73,18 +82,24 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                                   }
                                   push(
                                     NetworkImagesListViewHorizontal(
-                                      currentIndex: itemIndex,
+                                      currentIndex: i,
                                       images: widget.event!.imageList,
                                       title: widget.event!.title!,
                                     ),
                                   );
                                 },
                                 child: CachedNetworkImage(
-                                  imageUrl: widget.event!.imageList![itemIndex],
+                                  imageUrl:
+                                      widget
+                                          .event
+                                          ?.attachments?[i]
+                                          .supaSignedUrl ??
+                                      'assets/images/app_icon.png',
                                   // 'assets/icon/ataa_logo.png',
                                   fit: BoxFit.cover,
                                 ),
                               ),
+                          ],
                         )
                       : GestureDetector(
                           onTap: () {
@@ -140,58 +155,58 @@ class _EventDetailsViewState extends State<EventDetailsView> {
               const SizedBox(height: padding),
               Html(
                 data: data.replaceAll('null', '---'),
-                extensions: [
-                  IframeHtmlExtension(
-                    navigationDelegate: NavigationDelegate(
-                      onUrlChange: (change) async {
-                        debugPrint("URL changed to: ${change.url}");
-                        urlIframeChanges++;
-                        if (change.url == null || urlIframeChanges < 2) return;
-                        if (await canLaunchUrl(Uri.parse(change.url!))) {
-                          await launchUrl(
-                            Uri.parse(change.url!),
-                            mode: LaunchMode.externalApplication,
-                          );
-                        }
-                      },
-                      // onNavigationRequest: (NavigationRequest request) async {
-                      //   final url = request.url;
-                      //
-                      //   // Check if it's a YouTube link
-                      //   if (url.contains("youtube.com") ||
-                      //       url.contains("youtu.be")) {
-                      //     // Try to launch the URL in the YouTube app
-                      //     if (await canLaunchUrl(Uri.parse(url))) {
-                      //       await launchUrl(Uri.parse(url),
-                      //           mode: LaunchMode.externalApplication);
-                      //       return NavigationDecision.prevent;
-                      //     }
-                      //   }
-                      //
-                      //   return NavigationDecision.navigate;
-                      // },
-                      // onPageStarted: (url) {
-                      //   debugPrint("Page started: $url");
-                      // },
-                      // onPageFinished: (url) {
-                      //   debugPrint("Page finished: $url");
-                      // },
-                      // onProgress: (progress) {
-                      //   debugPrint("Progress: $progress%");
-                      // },
-                      // onWebResourceError: (error) {
-                      //   debugPrint("WebResourceError: $error");
-                      // },
+                // extensions: [
+                //   IframeHtmlExtension(
+                //     navigationDelegate: NavigationDelegate(
+                //       onUrlChange: (change) async {
+                //         debugPrint("URL changed to: ${change.url}");
+                //         urlIframeChanges++;
+                //         if (change.url == null || urlIframeChanges < 2) return;
+                //         if (await canLaunchUrl(Uri.parse(change.url!))) {
+                //           await launchUrl(
+                //             Uri.parse(change.url!),
+                //             mode: LaunchMode.externalApplication,
+                //           );
+                //         }
+                //       },
+                //       // onNavigationRequest: (NavigationRequest request) async {
+                //       //   final url = request.url;
+                //       //
+                //       //   // Check if it's a YouTube link
+                //       //   if (url.contains("youtube.com") ||
+                //       //       url.contains("youtu.be")) {
+                //       //     // Try to launch the URL in the YouTube app
+                //       //     if (await canLaunchUrl(Uri.parse(url))) {
+                //       //       await launchUrl(Uri.parse(url),
+                //       //           mode: LaunchMode.externalApplication);
+                //       //       return NavigationDecision.prevent;
+                //       //     }
+                //       //   }
+                //       //
+                //       //   return NavigationDecision.navigate;
+                //       // },
+                //       // onPageStarted: (url) {
+                //       //   debugPrint("Page started: $url");
+                //       // },
+                //       // onPageFinished: (url) {
+                //       //   debugPrint("Page finished: $url");
+                //       // },
+                //       // onProgress: (progress) {
+                //       //   debugPrint("Progress: $progress%");
+                //       // },
+                //       // onWebResourceError: (error) {
+                //       //   debugPrint("WebResourceError: $error");
+                //       // },
 
-                      // onHttpError: (error) {
-                      //   debugPrint("HTTP Error: $error");
-                      // },
-                      // onHttpAuthRequest: (request) {
-                      //   debugPrint("Auth Request: $request");
-                      // },
-                    ),
-                  ),
-                ],
+                //       // onHttpError: (error) {
+                //       //   debugPrint("HTTP Error: $error");
+                //       // },
+                //       // onHttpAuthRequest: (request) {
+                //       //   debugPrint("Auth Request: $request");
+                //       // },
+                //     ),
+                //   ),
+                // ],
                 onLinkTap: (url, _, __) {
                   launch(url!);
                 },

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/utils.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/custom_apis_methods.dart';
 
@@ -371,4 +372,16 @@ Future<String?> customInputDialog({
     },
   );
   return x;
+}
+
+Widget skeletonCard() {
+  return Skeleton.leaf(
+    child: Card(
+      child: ListTile(
+        title: Text('The title goes here'),
+        subtitle: Text('Subtitle here'),
+        trailing: Icon(Icons.ac_unit, size: 40),
+      ),
+    ),
+  );
 }

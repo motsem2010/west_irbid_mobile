@@ -30,28 +30,44 @@ class Event {
     this.attachmentsUrlString,
   });
 
-  fromJson(Map<String, dynamic> json) {
+  factory Event.fromJson(Map<String, dynamic> json) {
     try {
-      Iterable itr = json['Attachments'];
+      // Iterable itr = json['Attachments'];
       return Event(
-        imageUrl: _imageUrl(json['Image']),
-        category: json['Category'].toString(),
-        creatingDate: json['CreatingDate'].toString(),
-        id: json['Id'].toString(),
-        roleID: json['RoleID'].toString(),
-        url: json['Url'].toString(),
-        publishingDate: json['PublishingDate'].toString(),
+        imageUrl: json['image_url'],
+        category: json['category'].toString(),
+        creatingDate: json['creating_date'].toString(),
+        id: json['id'].toString(),
+        roleID: json['role_id'].toString(),
+        url: json['url'].toString(),
+        publishingDate: json['publishing_date'].toString(),
         // attachments: List<Attachment>.from(
         //     itr.map((model) => Attachment().fromJson(model))),
-        description: json['Description'].toString(),
-        title: json['Title'].toString(),
-        attachmentsUrlString: json['AttachmentsUrlString'].toString(),
-        imageList: (json['ImageList'] as List<dynamic>?)?.cast<String>() ?? [],
+        description: json['description'].toString(),
+        title: json['title'].toString(),
+        attachmentsUrlString: json['attachments_url_string'].toString(),
+        imageList: (json['image_list'] as List<dynamic>?)?.cast<String>() ?? [],
       );
     } catch (e) {
       debugPrint('Event class fromJson error:$e');
-      return null;
+      return Event();
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'image_url': imageUrl,
+      'category': category,
+      'creating_date': creatingDate,
+      'role_id': roleID,
+      'url': url,
+      'publishing_date': publishingDate,
+      'description': description,
+      'title': title,
+      'attachments_url_string': attachmentsUrlString,
+      'image_list': imageList,
+    };
   }
 
   String _imageUrl(String tmpImageUrl) {
