@@ -14,6 +14,7 @@ class Event {
   final String? url;
   final String? roleID;
   final List<String>? imageList;
+  bool? active;
 
   Event({
     this.imageUrl,
@@ -28,6 +29,7 @@ class Event {
     this.attachments,
     this.imageList,
     this.attachmentsUrlString,
+    this.active,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class Event {
         title: json['title'].toString(),
         attachmentsUrlString: json['attachments_url_string'].toString(),
         imageList: (json['image_list'] as List<dynamic>?)?.cast<String>() ?? [],
+        active: json['active'] as bool?,
       );
     } catch (e) {
       debugPrint('Event class fromJson error:$e');
@@ -67,6 +70,7 @@ class Event {
       'title': title,
       'attachments_url_string': attachmentsUrlString,
       'image_list': imageList,
+      'active': active,
     };
   }
 
