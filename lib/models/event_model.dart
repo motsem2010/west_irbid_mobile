@@ -3,16 +3,18 @@ import 'package:west_irbid_mobile/models/attachment_model.dart';
 
 class Event {
   final String? id;
-  final String? imageUrl;
+  String? imageUrl;
+  String? imageUrlSupa;
   final String? publishingDate;
   final String? title;
   final String? description;
   final String? attachmentsUrlString;
-  final List<Attachment>? attachments;
+  List<Attachment>? attachments;
   final String? creatingDate;
   final String? category;
   final String? url;
   final String? roleID;
+  String? attach_file;
   final List<String>? imageList;
   bool? active;
 
@@ -30,6 +32,8 @@ class Event {
     this.imageList,
     this.attachmentsUrlString,
     this.active,
+    this.attach_file,
+    this.imageUrlSupa,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -47,9 +51,10 @@ class Event {
         //     itr.map((model) => Attachment().fromJson(model))),
         description: json['description'].toString(),
         title: json['title'].toString(),
-        attachmentsUrlString: json['attachments_url_string'].toString(),
+        attachmentsUrlString: json['attachments_url_string'],
         imageList: (json['image_list'] as List<dynamic>?)?.cast<String>() ?? [],
         active: json['active'] as bool?,
+        attach_file: json['attach_file'],
       );
     } catch (e) {
       debugPrint('Event class fromJson error:$e');
@@ -59,18 +64,19 @@ class Event {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      // 'id': id,
       'image_url': imageUrl,
       'category': category,
       'creating_date': creatingDate,
-      'role_id': roleID,
+      // 'role_id': roleID,
       'url': url,
       'publishing_date': publishingDate,
       'description': description,
       'title': title,
       'attachments_url_string': attachmentsUrlString,
-      'image_list': imageList,
+      // 'image_list': imageList,
       'active': active,
+      'attach_file': attach_file,
     };
   }
 

@@ -6,7 +6,7 @@ import 'package:west_irbid_mobile/modules/news/event_details_view.dart';
 import 'package:west_irbid_mobile/services_utils/size_utils.dart';
 
 class EventWidget extends StatelessWidget {
-  final Event event;
+  Event event;
 
   EventWidget({Key? key, required this.event}) : super(key: key);
   final TextStyle textStyle = const TextStyle(
@@ -35,11 +35,12 @@ class EventWidget extends StatelessWidget {
         MaterialPageRoute(builder: (_) => EventDetailsView(event: event)),
       ),
       child: Container(
+        // height: 120,
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           boxShadow: const [
             BoxShadow(
@@ -52,27 +53,32 @@ class EventWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Hero(
-              tag: event.imageUrl!,
-              child: Container(
-                height: 94.v,
-                width: 84.h,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.8),
-                  border: Border.all(color: const Color(0xff0E9547), width: 1),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6.8),
-                  child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => const Center(
-                      child: SpinKitCircle(color: Colors.blueAccent),
+            Expanded(
+              flex: 1,
+              child: Hero(
+                tag: event.imageUrl!,
+                child: Container(
+                  height: 94,
+                  width: 84,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.8),
+                    border: Border.all(
+                      color: const Color(0xff0E9547),
+                      width: 1,
                     ),
-                    errorWidget: (context, url, error) => Center(
-                      child: Image.asset('assets/images/image_not_found.png'),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6.8),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => const Center(
+                        child: SpinKitCircle(color: Colors.blueAccent),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          Center(child: Image.asset('assets/images/news.png')),
+                      imageUrl: event.imageUrlSupa ?? '',
                     ),
-                    imageUrl: event.imageUrl!,
                   ),
                 ),
               ),
@@ -81,8 +87,9 @@ class EventWidget extends StatelessWidget {
             Expanded(
               flex: 4,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                // mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     event.title!,
@@ -102,7 +109,7 @@ class EventWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        event.publishingDate!,
+                        event.creatingDate!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

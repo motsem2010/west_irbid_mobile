@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:west_irbid_mobile/main.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
+import 'package:west_irbid_mobile/modules/news/news_and_events_view.dart';
 import 'package:west_irbid_mobile/services_utils/DB/token_db.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
@@ -141,7 +142,7 @@ class NotificationService {
       if (navigationView == 'news_view') {
         //   generalController.initBlockName = navigationView;
         //reload news view
-        push(NewsView());
+        push(NewsAndEventsView());
       }
       // if (navigationView == 'parents_notes_view' ||
       //     navigationView == 'bus_delay' ||

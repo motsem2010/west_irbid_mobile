@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_two_view.dart';
 import 'package:west_irbid_mobile/modules/diwan/diwan_view.dart';
+import 'package:west_irbid_mobile/modules/news/news_and_events_view.dart';
 import 'package:west_irbid_mobile/modules/workflow/workflow_binding.dart';
 import 'package:west_irbid_mobile/modules/workflow/workflow_view.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
@@ -28,7 +29,7 @@ class HomeDashboardController extends GetxController {
 
   // Navigate to category page 1
   void navigateToCategoryOne() {
-    Get.to(() => const NewsView());
+    Get.to(() => NewsAndEventsView());
   }
 
   // Navigate to category page 2

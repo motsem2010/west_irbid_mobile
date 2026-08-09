@@ -421,4 +421,6 @@ const Map<String, String> en = {
   'Error deleting role': 'Error deleting role',
   'Are you sure you want to delete this role?':
       'Are you sure you want to delete this role?',
+  'newsAndEvents': 'News & Events',
+  'latestNews ': 'Latest News',
 };

@@ -419,4 +419,5 @@ const Map<String, String> ar = {
   'Error deleting role': 'خطأ في حذف الدور',
   'Are you sure you want to delete this role?':
       'هل أنت متأكد من حذف هذا الدور؟',
+  'newsAndEvents': 'الأخبار و الأحداث',
 };
