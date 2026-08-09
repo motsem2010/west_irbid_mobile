@@ -420,4 +420,5 @@ const Map<String, String> ar = {
   'Are you sure you want to delete this role?':
       'هل أنت متأكد من حذف هذا الدور؟',
   'newsAndEvents': 'الأخبار و الأحداث',
+  'noNewsAndEvents': 'لا توجد أخبار أو أحداث حاليا',
 };

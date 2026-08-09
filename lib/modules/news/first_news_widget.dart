@@ -11,7 +11,7 @@ class SingleNewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => push(EventDetailsView(event: event)),
+      onTap: () => push(EventDetailsView(event: event!)),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Container(

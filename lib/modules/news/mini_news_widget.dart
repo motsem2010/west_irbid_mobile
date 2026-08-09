@@ -21,7 +21,7 @@ class MiniNewsCard extends StatelessWidget {
     print("this.event.description");
     print(this.event!.description);
     return GestureDetector(
-      onTap: () => push(EventDetailsView(event: event)),
+      onTap: () => push(EventDetailsView(event: event!)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(

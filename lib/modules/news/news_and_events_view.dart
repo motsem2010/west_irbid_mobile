@@ -52,38 +52,6 @@ class _NewsAndEventsViewState extends State<NewsAndEventsView> {
     );
   }
 
-  Future<Event> loadImages(Event eventItem, BuildContext context) async {
-    Event eventRet = eventItem;
-    if ((eventItem.attachmentsUrlString ?? '').trim().isEmpty) {
-      show_snackBar(context, Colors.red, 'noImagesToView'.tr);
-
-      return eventItem;
-    }
-    debugPrint('attachments_url_string ${eventItem.attachmentsUrlString}');
-    eventRet.attachments = [];
-    String? _supaSignedUrl;
-    List<String> _ImagesUrl = (eventItem.attachmentsUrlString ?? '').split(';');
-    debugPrint('with _ImagesUrl ${_ImagesUrl.length}');
-    if (_ImagesUrl.isNotEmpty) {
-      for (var e in _ImagesUrl) {
-        _supaSignedUrl = await SupaApi.getPublicUrl(e.trim());
-        debugPrint(_supaSignedUrl);
-        // pop(context);
-        // if (_supaSignedUrl != null)
-        eventRet.attachments?.add(
-          Attachment(url: e, supaSignedUrl: _supaSignedUrl),
-        );
-      }
-
-      debugPrint('with attachements ${eventRet.attachments?.length}');
-      setState(() {});
-      return eventRet;
-    } else {
-      debugPrint('no attachements');
-      return eventRet;
-    }
-  }
-
   Future initDataSource(BuildContext context) async {
     startLoading(context);
     // get attachment files

@@ -423,4 +423,5 @@ const Map<String, String> en = {
       'Are you sure you want to delete this role?',
   'newsAndEvents': 'News & Events',
   'latestNews ': 'Latest News',
+  'noNewsAndEvents': 'No news or events currently available',
 };

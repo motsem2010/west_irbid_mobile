@@ -4,9 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart'
     show launchUrl, LaunchMode, canLaunchUrl, launch;
+import 'package:west_irbid_mobile/models/attachment_model.dart';
 import 'package:west_irbid_mobile/models/event_model.dart';
+import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/widgets_cc/attachment_widget.dart';
 import 'package:west_irbid_mobile/widgets_cc/custom_view_n.dart';
@@ -17,11 +20,11 @@ import 'package:west_irbid_mobile/widgets_cc/newwork_image_view.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 
 class EventDetailsView extends StatefulWidget {
-  final Event? event;
+  Event event;
 
   static const String id = 'event_details_view';
 
-  const EventDetailsView({Key? key, this.event}) : super(key: key);
+  EventDetailsView({Key? key, required this.event}) : super(key: key);
 
   @override
   _EventDetailsViewState createState() => _EventDetailsViewState();
@@ -29,8 +32,57 @@ class EventDetailsView extends StatefulWidget {
 
 class _EventDetailsViewState extends State<EventDetailsView> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        startLoading(context, willPop: true);
+        widget.event = await loadImages(widget.event, context);
+
+        pop(context);
+        setState(() {});
+      },
+      // Main.enableBranchesCalendarAndEvents
+      //     ? initDataSource(context)
+      //     : GeneralController.read(context).getEvents().showLoading()
+    );
+  }
+
+  Future<Event> loadImages(Event eventItem, BuildContext context) async {
+    Event eventRet = eventItem;
+    if ((eventItem.attachmentsUrlString ?? '').trim().isEmpty) {
+      show_snackBar(context, Colors.red, 'noImagesToView'.tr);
+
+      return eventItem;
+    }
+    debugPrint('attachments_url_string ${eventItem.attachmentsUrlString}');
+    eventRet.attachments = [];
+    String? _supaSignedUrl;
+    List<String> _ImagesUrl = (eventItem.attachmentsUrlString ?? '').split(';');
+    debugPrint('with _ImagesUrl ${_ImagesUrl.length}');
+    if (_ImagesUrl.isNotEmpty) {
+      for (var e in _ImagesUrl) {
+        _supaSignedUrl = await SupaApi.getPublicUrl(e.trim());
+        debugPrint(_supaSignedUrl);
+        // pop(context);
+        // if (_supaSignedUrl != null)
+        eventRet.attachments?.add(
+          Attachment(url: e, supaSignedUrl: _supaSignedUrl),
+        );
+      }
+
+      debugPrint('with attachements ${eventRet.attachments?.length}');
+      setState(() {});
+      return eventRet;
+    } else {
+      debugPrint('no attachements');
+      return eventRet;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint(widget.event!.attachments!.length.toString());
+    debugPrint(widget.event.attachments?.length.toString());
     String data =
         // (Main.currentSchool == School.newEnglish ||
         //     Main.currentSchool == School.ets)
@@ -41,7 +93,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
         //       .replaceAll('width:', 'ss:')
         //       .replaceAll('height:', 'ss:')
         // :
-        widget.event!.description!;
+        widget.event.description ?? '';
 
     // debugPrint(data.toString());
 
@@ -49,18 +101,18 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     const double padding = 30;
     int urlIframeChanges = 0;
     return CustomViewN(
-      title: widget.event!.title,
+      title: widget.event.title,
       body: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Hero(
-              tag: widget.event!.imageUrl!,
+              tag: widget.event.imageUrl!,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * .75,
                 height: height * .2,
                 child: Center(
-                  child: (widget.event?.imageList ?? []).isNotEmpty
+                  child: (widget.event.imageList ?? []).isNotEmpty
                       ? CarouselView(
                           itemExtent: double.maxFinite,
                           // itemCount: (widget.event?.imageList ?? []).length,
@@ -71,20 +123,20 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           children: [
                             for (
                               int i = 0;
-                              i < (widget.event?.attachments?.length ?? 0);
+                              i < (widget.event.attachments?.length ?? 0);
                               i++
                             )
                               GestureDetector(
                                 onTap: () {
-                                  if (widget.event!.imageList == null ||
-                                      widget.event!.imageList!.isEmpty) {
+                                  if (widget.event.imageList == null ||
+                                      widget.event.imageList!.isEmpty) {
                                     return;
                                   }
                                   push(
                                     NetworkImagesListViewHorizontal(
                                       currentIndex: i,
-                                      images: widget.event!.imageList,
-                                      title: widget.event!.title!,
+                                      images: widget.event.imageList,
+                                      title: widget.event.title!,
                                     ),
                                   );
                                 },
@@ -103,13 +155,13 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                         )
                       : GestureDetector(
                           onTap: () {
-                            if (widget.event!.imageUrl == null ||
-                                widget.event!.imageUrl!.isEmpty) {
+                            if (widget.event.imageUrlSupa == null ||
+                                widget.event.imageUrlSupa!.isEmpty) {
                               return;
                             }
                             push(
                               NetworkImageView(
-                                imageURL: widget.event!.imageUrl!,
+                                imageURL: widget.event.imageUrlSupa!,
                               ),
                             );
                           },
@@ -119,11 +171,9 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                               child: SpinKitCircle(color: Colors.blueAccent),
                             ),
                             errorWidget: (context, url, error) => Center(
-                              child: Image.asset(
-                                'assets/images/image_not_found.png',
-                              ),
+                              child: Image.asset('assets/images/news .png'),
                             ),
-                            imageUrl: widget.event!.imageUrl!,
+                            imageUrl: widget.event.imageUrlSupa!,
                           ),
                         ),
                 ),
@@ -211,7 +261,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                   launch(url!);
                 },
               ),
-              for (var attachment in widget.event!.attachments!)
+              for (var attachment in (widget.event.attachments ?? []))
                 AttachmentWidget(attachment: attachment),
             ],
           ),
