@@ -171,9 +171,9 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                               child: SpinKitCircle(color: Colors.blueAccent),
                             ),
                             errorWidget: (context, url, error) => Center(
-                              child: Image.asset('assets/images/news .png'),
+                              child: Image.asset('assets/images/news.png'),
                             ),
-                            imageUrl: widget.event.imageUrlSupa!,
+                            imageUrl: widget.event.imageUrlSupa ?? '',
                           ),
                         ),
                 ),

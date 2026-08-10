@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:west_irbid_mobile/models/event_model.dart';
 import 'package:west_irbid_mobile/modules/news/event_details_view.dart';
 import 'package:west_irbid_mobile/services_utils/size_utils.dart';
@@ -56,7 +57,7 @@ class EventWidget extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Hero(
-                tag: event.imageUrl!,
+                tag: event.imageUrlSupa ?? '',
                 child: Container(
                   height: 94,
                   width: 84,
@@ -92,15 +93,15 @@ class EventWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    event.title!,
+                    event.title ?? 'title'.tr,
                     style: textStyle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  if (getDescriptionFromHtml(event.description!) != 'null')
+                  if (getDescriptionFromHtml(event.description ?? '') != 'null')
                     Text(
-                      getDescriptionFromHtml(event.description!),
+                      getDescriptionFromHtml(event.description ?? ''),
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,

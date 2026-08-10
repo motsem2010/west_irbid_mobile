@@ -71,9 +71,9 @@ class AttachmentWidget extends StatelessWidget {
               return;
             }
             if (attachment?.supaSignedUrl != null &&
-                !(attachment?.uploadFileUri!.endsWith('pdf') ?? false)) {
+                !(attachment?.uploadFileUri?.endsWith('pdf') ?? false)) {
               launchUrl(
-                Uri.parse(attachment!.supaSignedUrl ?? ''),
+                Uri.parse(attachment?.supaSignedUrl ?? ''),
                 mode: LaunchMode.externalApplication,
               );
               // HelperMethods.showMediasDialog(context,
