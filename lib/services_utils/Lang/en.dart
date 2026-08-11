@@ -424,4 +424,12 @@ const Map<String, String> en = {
   'newsAndEvents': 'News & Events',
   'latestNews ': 'Latest News',
   'noNewsAndEvents': 'No news or events currently available',
+  'checkIn': 'Check In',
+  'checkInDesc': 'Record your entry to work',
+  'checkOut': 'Check Out',
+  'checkOutDesc': 'Record your departure from work',
+  'temporaryLeave': 'Temporary Leave',
+  'tempLeaveDesc': 'Record a temporary leave during work hours',
+  'returnFromLeave': 'Return From Leave',
+  'returnDesc': 'Record your return from temporary leave',
 };

@@ -73,6 +73,37 @@ coolAlert({
   );
 }
 
+coolAlert2({
+  required context,
+  lottie,
+  String? text,
+  required CoolAlertType type,
+  Function()? onTap,
+  bool showCancelBtn = false,
+  bool dismissible = true,
+  String? title,
+  String? cancelText,
+  String? confirmText,
+  Color? confirmButtonColor,
+  Color? bgColor,
+}) {
+  CoolAlert.show(
+    context: context,
+    type: type,
+    closeOnConfirmBtnTap: onTap == null,
+    lottieAsset: lottie,
+    title: title ?? 'ok'.tr,
+    text: text,
+    barrierDismissible: dismissible,
+    showCancelBtn: showCancelBtn,
+    cancelBtnText: cancelText ?? '',
+    confirmBtnText: confirmText ?? '',
+    onConfirmBtnTap: onTap,
+    confirmBtnColor: confirmButtonColor ?? Color(0xFF3085D6),
+    backgroundColor: bgColor ?? Color(0xFF515C6F),
+  );
+}
+
 Future<bool> generalDialog({
   required BuildContext context,
   String? text,

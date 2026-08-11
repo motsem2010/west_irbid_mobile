@@ -421,4 +421,12 @@ const Map<String, String> ar = {
       'هل أنت متأكد من حذف هذا الدور؟',
   'newsAndEvents': 'الأخبار و الأحداث',
   'noNewsAndEvents': 'لا توجد أخبار أو أحداث حاليا',
+  'checkIn': 'تسجيل دخول',
+  'checkInDesc': 'تسجيل الدخول إلى العمل',
+  'checkOut': 'تسجيل خروج',
+  'checkOutDesc': 'تسجيل الخروج من العمل',
+  'temporaryLeave': 'مغادرة مؤقتة',
+  'tempLeaveDesc': 'تسجيل مغادرة مؤقتة أثناء ساعات العمل',
+  'returnFromLeave': 'العودة من المغادرة',
+  'returnDesc': 'تسجيل العودة من المغادرة المؤقتة',
 };

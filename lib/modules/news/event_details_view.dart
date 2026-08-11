@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:eschool/eschool.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -57,18 +56,22 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     }
     debugPrint('attachments_url_string ${eventItem.attachmentsUrlString}');
     eventRet.attachments = [];
-    String? _supaSignedUrl;
-    List<String> _ImagesUrl = (eventItem.attachmentsUrlString ?? '').split(';');
-    debugPrint('with _ImagesUrl ${_ImagesUrl.length}');
-    if (_ImagesUrl.isNotEmpty) {
-      for (var e in _ImagesUrl) {
-        _supaSignedUrl = await SupaApi.getPublicUrl(e.trim());
-        debugPrint(_supaSignedUrl);
-        // pop(context);
-        // if (_supaSignedUrl != null)
-        eventRet.attachments?.add(
-          Attachment(url: e, supaSignedUrl: _supaSignedUrl),
-        );
+    String? supaSignedUrl;
+    List<String> imagesUrl = (eventItem.attachmentsUrlString ?? '').split(';');
+    debugPrint('with ImagesUrl ${imagesUrl.length}');
+    if (imagesUrl.isNotEmpty) {
+      for (var e in imagesUrl) {
+        if (e.length > 10) {
+          supaSignedUrl = await SupaApi.getPublicUrl(e.trim());
+          debugPrint(supaSignedUrl);
+          // pop(context);
+          // if (_supaSignedUrl != null)
+          eventRet.attachments?.add(
+            Attachment(uploadFileUri: e, url: e, supaSignedUrl: supaSignedUrl),
+          );
+        } else {
+          debugPrint('no attachment for e $e');
+        }
       }
 
       debugPrint('with attachements ${eventRet.attachments?.length}');
@@ -99,7 +102,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
 
     final double height = MediaQuery.of(context).size.height;
     const double padding = 30;
-    int urlIframeChanges = 0;
+    // int urlIframeChanges = 0;
     return CustomViewN(
       title: widget.event.title,
       body: [
@@ -113,13 +116,14 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                 height: height * .2,
                 child: Center(
                   child: (widget.event.imageList ?? []).isNotEmpty
-                      ? CarouselView(
-                          itemExtent: double.maxFinite,
-                          // itemCount: (widget.event?.imageList ?? []).length,
-                          // options: CarouselOptions(
-                          //   autoPlay: true,
-                          //   viewportFraction: 1.0,
-                          // ),
+                      ? ImageSlideshow(
+                          width: MediaQuery.of(context).size.width * .75,
+                          height: height * .2,
+                          initialPage: 0,
+                          indicatorColor: Colors.blue,
+                          indicatorBackgroundColor: Colors.grey,
+                          autoPlayInterval: 3000,
+                          isLoop: true,
                           children: [
                             for (
                               int i = 0;
@@ -144,7 +148,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                                   imageUrl:
                                       widget
                                           .event
-                                          ?.attachments?[i]
+                                          .attachments?[i]
                                           .supaSignedUrl ??
                                       'assets/images/app_icon.png',
                                   // 'assets/icon/ataa_logo.png',
