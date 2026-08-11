@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:west_irbid_mobile/modules/attendance_actions/attendance_actions_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_one_view.dart';
 import 'package:west_irbid_mobile/modules/homeDashboard/category_two_view.dart';
 import 'package:west_irbid_mobile/modules/diwan/diwan_view.dart';
@@ -34,7 +35,7 @@ class HomeDashboardController extends GetxController {
 
   // Navigate to category page 2
   void navigateToCategoryTwo() {
-    Get.to(() => const CategoryTwoView());
+    Get.to(() => const AttendanceActionsView());
   }
 
   // Navigate to Diwan view

@@ -162,7 +162,7 @@ class HomeDashboardView extends StatelessWidget {
 
                     // Category Button 2
                     _buildCategoryCard(
-                      title: 'الفئة الثانية',
+                      title: 'الحضور والانصراف',
                       subtitle: 'الوصول إلى الصفحة الثانية',
                       icon: Icons.folder_outlined,
                       color: const Color(0xFF10B981),

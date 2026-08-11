@@ -13,6 +13,7 @@ import 'package:get_storage/get_storage.dart';
 // import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:west_irbid_mobile/modules/home/home_view.dart';
 import 'package:west_irbid_mobile/modules/login/login_view.dart';
 import 'package:west_irbid_mobile/services_utils/DB/token_db.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
@@ -216,7 +217,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: ConstantsData.primaryClr),
         useMaterial3: true,
       ),
-      home: const LoginView(),
+      home: const HomeView(),
     );
   }
 }
