@@ -138,17 +138,15 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
 
       debugPrint("Attendance Request: $request");
 
-      // final checkInOut = await EmployeeController.read().checkOutInByLocation(
-      //   request,
-      // );
-      // if ((checkInOut == null || checkInOut.isWithinZone == false) && mounted) {
-      //   return coolAlert2(
-      //     context: context,
-      //     type: CoolAlertType.warning,
-      //     confirmText: 'success'.tr,
-      //     text: checkInOut?.message ?? 'somethingWentWrong'.tr,
-      //   );
-      // }
+      final checkInOut = await checkOutInByLocation(request);
+      if ((checkInOut == null || checkInOut.isWithinZone == false) && mounted) {
+        return coolAlert2(
+          context: context,
+          type: CoolAlertType.warning,
+          confirmText: 'success'.tr,
+          text: checkInOut?.message ?? 'somethingWentWrong'.tr,
+        );
+      }
 
       _loadRecords();
 
