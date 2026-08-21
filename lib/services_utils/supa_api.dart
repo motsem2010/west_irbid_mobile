@@ -274,12 +274,16 @@ class SupaApi {
   static Future<List<T>?> get_PRC<T>({
     required BuildContext context,
     required String function_name,
-    required T Function(Map<String, dynamic>)
-    fromJson, // Pass a fromJson function
+    required T Function(Map<String, dynamic>) fromJson,
+    Map<String, dynamic>? params,
+    // Pass a fromJson function
   }) async {
     List<T> _data = [];
     try {
-      List<Map<String, dynamic>> x = await supaInstCLient.rpc(function_name);
+      List<Map<String, dynamic>> x = await supaInstCLient.rpc(
+        function_name,
+        params: params,
+      );
 
       Get.log(x.toString());
       List<dynamic> y = x[0]['user_data'];

@@ -1,8 +1,10 @@
+import 'package:west_irbid_mobile/models/check_in_out_model.dart';
+
 class CheckInOutRecord {
   bool? success;
   int? employeeID;
   String? transactionDate;
-  List<EmployeeRecord>? employeeRecords;
+  List<CheckInOutModel>? employeeRecords;
 
   CheckInOutRecord({
     this.success,
@@ -17,7 +19,7 @@ class CheckInOutRecord {
       employeeID: json['employeeID'],
       transactionDate: json['transactionDate'],
       employeeRecords: (json['records'] as List<dynamic>?)
-          ?.map((e) => EmployeeRecord.fromJson(e))
+          ?.map((e) => CheckInOutModel.fromJson(e))
           .toList(),
     );
   }
@@ -27,10 +29,7 @@ class EmployeeRecord {
   String? transactionTime;
   int? fingerprintType;
 
-  EmployeeRecord({
-    this.transactionTime,
-    this.fingerprintType,
-  });
+  EmployeeRecord({this.transactionTime, this.fingerprintType});
 
   factory EmployeeRecord.fromJson(Map<String, dynamic> json) {
     return EmployeeRecord(

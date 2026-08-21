@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:west_irbid_mobile/models/check_in_out_model.dart';
 import 'package:west_irbid_mobile/models/check_in_out_record.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
+import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/translation_service.dart';
 import 'package:west_irbid_mobile/services_utils/ui_helpers.dart';
 import 'package:west_irbid_mobile/widgets/appbar_with_profile.dart';
@@ -114,6 +116,17 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
     }
   }
 
+  checkOutInByLocation(CheckInOutModel req) async {
+    var result = await SupaApi.get_PRC<CheckInOutRecord>(
+      context: context,
+      function_name: 'checkOutIn',
+      params: req.toJson(),
+      fromJson: CheckInOutRecord.fromJson,
+    );
+    Get.log("result: $result");
+    return result;
+  }
+
   Future<void> executeAttendanceAction(Map<String, dynamic> action) async {
     if (loadingAction != null) return;
 
@@ -136,9 +149,19 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
         "targetLon": position.longitude,
       };
 
-      debugPrint("Attendance Request: $request");
+      CheckInOutModel reqModel = CheckInOutModel(
+        employeeID: ConstantsData.currentUser?.id,
+        fingerprintType: action["fingerprintType"],
+        fingerprint_type_text: getFingerprintTypeName(
+          int.parse(action["fingerprintType"]),
+        ),
+        targetLat: position.latitude,
+        targetLon: position.longitude,
+        isWithinZone: true,
+      );
+      debugPrint("Attendance Request: ${reqModel.toJson()}");
 
-      final checkInOut = await checkOutInByLocation(request);
+      final checkInOut = await checkOutInByLocation(reqModel);
       if ((checkInOut == null || checkInOut.isWithinZone == false) && mounted) {
         return coolAlert2(
           context: context,

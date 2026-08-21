@@ -40,7 +40,15 @@ class _NewsAndEventsViewState extends State<NewsAndEventsView> {
           if ((item.imageUrl ?? '').length > 10 &&
               item.imageUrl != 'error' &&
               (item.imageUrlSupa ?? '').isEmpty) {
-            item.imageUrlSupa = await SupaApi.getPublicUrl(item.imageUrl!);
+            try {
+              if ((item.imageUrl ?? '').length > 10) {
+                item.imageUrlSupa =
+                    await SupaApi.getPublicUrl(item.imageUrl ?? '') ?? '';
+              }
+            } catch (e) {
+              debugPrint(e.toString());
+              item.imageUrlSupa = '';
+            }
           }
         }
         pop(context);
