@@ -304,6 +304,42 @@ class SupaApi {
     }
   }
 
+  static Future<T?> get_PRC_one<T>({
+    required BuildContext context,
+    required String function_name,
+    required T Function(Map<String, dynamic>) fromJson,
+    Map<String, dynamic>? params,
+    // Pass a fromJson function
+  }) async {
+    T? _data;
+    try {
+      Map<String, dynamic>? x = await supaInstCLient.rpc(
+        function_name,
+        params: params,
+      );
+
+      Get.log(x.toString());
+      // List<dynamic> y = x[0]['user_data'];
+      if (x != null) {
+        _data = fromJson(x); // Use the fromJson function
+      } else {
+        Get.log('Empty');
+      }
+      return _data;
+    } catch (e) {
+      Get.log(e.toString());
+      show_snackBar(
+        context,
+        ConstantsData.absentClr,
+        'Error to retrieve PRC ${function_name}'.tr,
+      );
+      return _data;
+    }
+    // finally {
+    //   return _data;
+    // }
+  }
+
   static Future<void> get_PRCParam({
     required String function_name,
     required Map<String, dynamic>? params,

@@ -61,4 +61,16 @@ class CheckInOutModel {
     data['is_within_zone'] = isWithinZone;
     return data;
   }
+
+  Map<String, dynamic> toJson2() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['p_employee_id'] = employeeID;
+    data['p_fingerprint_type'] = fingerprintType;
+    data['p_fingerprint_type_text'] = fingerprint_type_text;
+    data['p_target_lat'] = targetLat;
+    data['p_target_lon'] = targetLon;
+    data['p_message'] = message;
+    data['p_is_within_zone'] = isWithinZone;
+    return data;
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:west_irbid_mobile/models/check_in_out_model.dart';
 import 'package:west_irbid_mobile/models/check_in_out_record.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
@@ -116,14 +117,14 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
     }
   }
 
-  checkOutInByLocation(CheckInOutModel req) async {
-    var result = await SupaApi.get_PRC<CheckInOutRecord>(
+  Future<CheckInOutRecord?> checkOutInByLocation(CheckInOutModel req) async {
+    CheckInOutRecord? result = await SupaApi.get_PRC_one<CheckInOutRecord>(
       context: context,
-      function_name: 'checkOutIn',
-      params: req.toJson(),
+      function_name: 'check_in_out',
+      params: req.toJson2(),
       fromJson: CheckInOutRecord.fromJson,
     );
-    Get.log("result: $result");
+    // Get.log("result: ${result?.toJson()}");
     return result;
   }
 
@@ -157,16 +158,16 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
         ),
         targetLat: position.latitude,
         targetLon: position.longitude,
-        isWithinZone: true,
+        isWithinZone: false,
       );
-      debugPrint("Attendance Request: ${reqModel.toJson()}");
+      debugPrint("Attendance Request: ${reqModel.toJson2()}");
 
       final checkInOut = await checkOutInByLocation(reqModel);
-      if ((checkInOut == null || checkInOut.isWithinZone == false) && mounted) {
+      if ((checkInOut == null || checkInOut.success == false) && mounted) {
         return coolAlert2(
           context: context,
-          type: CoolAlertType.warning,
-          confirmText: 'success'.tr,
+          type: CoolAlertType.error,
+          confirmText: 'error'.tr,
           text: checkInOut?.message ?? 'somethingWentWrong'.tr,
         );
       }
