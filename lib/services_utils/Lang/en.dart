@@ -432,4 +432,11 @@ const Map<String, String> en = {
   'tempLeaveDesc': 'Record a temporary leave during work hours',
   'returnFromLeave': 'Return From Leave',
   'returnDesc': 'Record your return from temporary leave',
+  'dailyAttendanceDetails': 'Daily Attendance Details',
+  'noRecordsFound': 'No attendance records found',
+  'isWithinZone': 'Within Zone',
+  'isOutsideZone': 'Outside Zone',
+  'success': 'Success',
+  'failed': 'Failed',
+  'coordinates': 'Coordinates',
 };

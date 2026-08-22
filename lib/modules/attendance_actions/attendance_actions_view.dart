@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:west_irbid_mobile/models/check_in_out_model.dart';
 import 'package:west_irbid_mobile/models/check_in_out_record.dart';
+import 'package:west_irbid_mobile/modules/attendance_actions/attendance_details_daily.dart';
 import 'package:west_irbid_mobile/services_utils/constants.dart';
 import 'package:west_irbid_mobile/services_utils/supa_api.dart';
 import 'package:west_irbid_mobile/services_utils/translation_service.dart';
@@ -142,13 +143,13 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
         throw Exception("Unable to get location");
       }
 
-      final request = {
-        "employeeID": ConstantsData.currentUser?.id,
-        // "employeeID": "70",
-        "fingerprintType": action["fingerprintType"],
-        "targetLat": position.latitude,
-        "targetLon": position.longitude,
-      };
+      // final request = {
+      //   "employeeID": ConstantsData.currentUser?.id,
+      //   // "employeeID": "70",
+      //   "fingerprintType": action["fingerprintType"],
+      //   "targetLat": position.latitude,
+      //   "targetLon": position.longitude,
+      // };
 
       CheckInOutModel reqModel = CheckInOutModel(
         employeeID: ConstantsData.currentUser?.id,
@@ -156,8 +157,10 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
         fingerprint_type_text: getFingerprintTypeName(
           int.parse(action["fingerprintType"]),
         ),
-        targetLat: position.latitude,
-        targetLon: position.longitude,
+        targetLat: 32.5583320293911,
+        // position.latitude,
+        targetLon: 35.798842603137274,
+        // position.longitude,
         isWithinZone: false,
       );
       debugPrint("Attendance Request: ${reqModel.toJson2()}");
@@ -179,12 +182,15 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
         type: CoolAlertType.success,
         onTap: () {
           pop(context);
-          pop(context);
+          // pop(context);
+          Get.to(
+            () => AttendanceDetailsDaily(
+              checkInOutList: checkInOut?.employeeRecords ?? [],
+            ),
+          );
         },
         confirmText: 'ok'.tr,
-        text:
-            // checkInOut?.message ??
-            'somethingWentWrong'.tr,
+        text: checkInOut?.message ?? 'somethingWentWrong'.tr,
       );
     } catch (e) {
       if (mounted) {

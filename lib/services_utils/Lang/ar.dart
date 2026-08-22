@@ -429,4 +429,11 @@ const Map<String, String> ar = {
   'tempLeaveDesc': 'تسجيل مغادرة مؤقتة أثناء ساعات العمل',
   'returnFromLeave': 'العودة من المغادرة',
   'returnDesc': 'تسجيل العودة من المغادرة المؤقتة',
+  'dailyAttendanceDetails': 'تفاصيل الحضور اليومي',
+  'noRecordsFound': 'لا توجد سجلات حضور',
+  'isWithinZone': 'داخل النطاق',
+  'isOutsideZone': 'خارج النطاق',
+  'success': 'ناجح',
+  'failed': 'فشل',
+  'coordinates': 'الإحداثيات',
 };
