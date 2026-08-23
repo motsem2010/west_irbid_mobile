@@ -100,6 +100,14 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
         "description": 'returnDesc'.tr,
         "icon": Icons.keyboard_return,
       },
+
+      {
+        "fingerprintType": "5",
+        "id": "get_checkin_checkout_records",
+        "title": 'getCheckinCheckoutRecords'.tr,
+        "description": 'getCheckinCheckoutRecordsDesc'.tr,
+        "icon": Icons.list,
+      },
     ];
   }
 
@@ -289,15 +297,34 @@ class _AttendanceActionsViewState extends State<AttendanceActionsView> {
     );
   }
 
+  getEmpOperations() async {
+    List<CheckInOutModel> recordsList =
+        await SupaApi.get_PRC<CheckInOutModel>(
+          context: context,
+          function_name: 'get_checkout_checkin',
+          fromJson: CheckInOutModel.fromJson,
+          params: {},
+          parseUserData: false,
+        ) ??
+        [];
+    Get.log('recordsList: ${recordsList.length}');
+    if (recordsList.length > 0) {
+      Get.to(() => AttendanceDetailsDaily(checkInOutList: recordsList));
+    }
+  }
+
   Widget _buildActionCard(Map<String, dynamic> action, ColorScheme colors) {
     final isLoading = loadingAction == action["id"];
+    final int operationType = int.parse(action["fingerprintType"]);
 
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: loadingAction == null
-            ? () => executeAttendanceAction(action)
+            ? (operationType == 5
+                  ? () => getEmpOperations()
+                  : () => executeAttendanceAction(action))
             : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),

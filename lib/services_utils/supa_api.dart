@@ -276,23 +276,24 @@ class SupaApi {
     required String function_name,
     required T Function(Map<String, dynamic>) fromJson,
     Map<String, dynamic>? params,
+    bool parseUserData = true,
     // Pass a fromJson function
   }) async {
     List<T> _data = [];
-    try {
-      List<Map<String, dynamic>> x = await supaInstCLient.rpc(
-        function_name,
-        params: params,
-      );
+    // try {
+    List<Map<String, dynamic>> x = await supaInstCLient.rpc(
+      function_name,
+      params: params,
+    );
 
-      Get.log(x.toString());
-      List<dynamic> y = x[0]['user_data'];
-      if (y.isNotEmpty) {
-        _data = y.map((e) => fromJson(e)).toList(); // Use the fromJson function
-      } else {
-        Get.log('Empty');
-      }
-    } catch (e) {
+    Get.log(x.toString());
+    List<dynamic> y = parseUserData ? x[0]['user_data'] : x;
+    if (y.isNotEmpty) {
+      _data = y.map((e) => fromJson(e)).toList(); // Use the fromJson function
+    } else {
+      Get.log('Empty');
+    }
+    try {} catch (e) {
       Get.log(e.toString());
       show_snackBar(
         context,

@@ -436,4 +436,6 @@ const Map<String, String> ar = {
   'success': 'ناجح',
   'failed': 'فشل',
   'coordinates': 'الإحداثيات',
+  'getCheckinCheckoutRecords': 'سجلات الحضور',
+  'getCheckinCheckoutRecordsDesc': 'عرض سجلات الحضور',
 };

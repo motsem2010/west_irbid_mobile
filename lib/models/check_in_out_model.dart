@@ -33,14 +33,14 @@ class CheckInOutModel {
     updatedAt = json['updated_at'] != null
         ? DateTime.parse(json['updated_at'])
         : null;
-    employeeID = json['employeeID'];
-    fingerprintType = json['fingerprintType'];
+    employeeID = int.parse(json['employee_id'].toString());
+    fingerprintType = json['fingerprint_type'];
     fingerprint_type_text = json['fingerprint_type_text'];
-    targetLat = json['targetLat'];
-    targetLon = json['targetLon'];
-    success = json['success'];
-    message = json['message'];
-    isWithinZone = json['isWithinZone'];
+    targetLat = double.tryParse(json['target_lat'].toString());
+    targetLon = double.tryParse(json['target_lon'].toString());
+    success = json['success'] as bool?;
+    message = json['message'] as String?;
+    isWithinZone = json['is_within_zone'] as bool?;
   }
 
   // CheckInOutModel.fromJson2(Map<String, dynamic> json) {

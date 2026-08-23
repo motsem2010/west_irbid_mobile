@@ -9,10 +9,7 @@ import 'package:west_irbid_mobile/widgets_cc/custom_scaffold.dart';
 class AttendanceDetailsDaily extends StatelessWidget {
   final List<CheckInOutModel> checkInOutList;
 
-  const AttendanceDetailsDaily({
-    super.key,
-    required this.checkInOutList,
-  });
+  const AttendanceDetailsDaily({super.key, required this.checkInOutList});
 
   AttendanceTypeConfig _getConfig(String? typeStr) {
     final type = int.tryParse(typeStr ?? '');
@@ -84,9 +81,7 @@ class AttendanceDetailsDaily extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return CustomScaffold(
-      appBar: AppBarAtaa(
-        title: 'dailyAttendanceDetails'.tr,
-      ),
+      appBar: AppBarAtaa(title: 'dailyAttendanceDetails'.tr),
       body: checkInOutList.isEmpty
           ? Center(
               child: Column(
@@ -116,54 +111,118 @@ class AttendanceDetailsDaily extends StatelessWidget {
                 final record = checkInOutList[index];
                 final config = _getConfig(record.fingerprintType);
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: colors.outlineVariant.withValues(alpha: 0.4),
-                        width: 1,
+                return InkWell(
+                  onTap: () {
+                    debugPrint(record.toJson().toString());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(
+                          color: colors.outlineVariant.withValues(alpha: 0.4),
+                          width: 1,
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              // Icon with colored circle background
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: config.backgroundColor,
-                                  shape: BoxShape.circle,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                // Icon with colored circle background
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: config.backgroundColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    config.icon,
+                                    color: config.primaryColor,
+                                    size: 24,
+                                  ),
                                 ),
-                                child: Icon(
-                                  config.icon,
-                                  color: config.primaryColor,
-                                  size: 24,
+                                const SizedBox(width: 12),
+                                // Type and Time
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        config.label,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: colors.onSurface,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        _formatTime(record.createdAt),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: colors.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                              // Type and Time
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      config.label,
+                                // Success / Failed Badge
+                                if (record.success != null)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: record.success == true
+                                          ? const Color(0xFFE6FDF4)
+                                          : const Color(0xFFFEE2E2),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      record.success == true
+                                          ? 'success'.tr
+                                          : 'failed'.tr,
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: colors.onSurface,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: record.success == true
+                                            ? const Color(0xFF10B981)
+                                            : const Color(0xFFEF4444),
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Divider(
+                              color: colors.outlineVariant.withValues(
+                                alpha: 0.4,
+                              ),
+                              height: 1,
+                            ),
+                            const SizedBox(height: 12),
+                            // Date & Zone Status
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Date
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today_rounded,
+                                      size: 14,
+                                      color: colors.onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 6),
                                     Text(
-                                      _formatTime(record.createdAt),
+                                      _formatDate(record.createdAt),
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: colors.onSurfaceVariant,
@@ -171,157 +230,102 @@ class AttendanceDetailsDaily extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ),
-                              // Success / Failed Badge
-                              if (record.success != null)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: record.success == true
-                                        ? const Color(0xFFE6FDF4)
-                                        : const Color(0xFFFEE2E2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    record.success == true
-                                        ? 'success'.tr
-                                        : 'failed'.tr,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: record.success == true
-                                          ? const Color(0xFF10B981)
-                                          : const Color(0xFFEF4444),
+                                // Zone status
+                                if (record.isWithinZone != null)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
                                     ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Divider(
-                            color: colors.outlineVariant.withValues(alpha: 0.4),
-                            height: 1,
-                          ),
-                          const SizedBox(height: 12),
-                          // Date & Zone Status
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Date
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.calendar_today_rounded,
-                                    size: 14,
-                                    color: colors.onSurfaceVariant,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    _formatDate(record.createdAt),
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: colors.onSurfaceVariant,
+                                    decoration: BoxDecoration(
+                                      color: record.isWithinZone == true
+                                          ? const Color(0xFFE0F2FE)
+                                          : const Color(0xFFF3F4F6),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // Zone status
-                              if (record.isWithinZone != null)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: record.isWithinZone == true
-                                        ? const Color(0xFFE0F2FE)
-                                        : const Color(0xFFF3F4F6),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        record.isWithinZone == true
-                                            ? Icons.check_circle_rounded
-                                            : Icons.cancel_rounded,
-                                        size: 12,
-                                        color: record.isWithinZone == true
-                                            ? const Color(0xFF0284C7)
-                                            : const Color(0xFF6B7280),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        record.isWithinZone == true
-                                            ? 'isWithinZone'.tr
-                                            : 'isOutsideZone'.tr,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          record.isWithinZone == true
+                                              ? Icons.check_circle_rounded
+                                              : Icons.cancel_rounded,
+                                          size: 12,
                                           color: record.isWithinZone == true
                                               ? const Color(0xFF0284C7)
                                               : const Color(0xFF6B7280),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ),
-                          // Coordinates
-                          if (record.targetLat != null &&
-                              record.targetLon != null) ...[
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_rounded,
-                                  size: 14,
-                                  color: colors.onSurfaceVariant,
-                                ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    "${'coordinates'.tr}: ${record.targetLat!.toStringAsFixed(6)}, ${record.targetLon!.toStringAsFixed(6)}",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: colors.onSurfaceVariant,
-                                      fontFamily: 'monospace',
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          record.isWithinZone == true
+                                              ? 'isWithinZone'.tr
+                                              : 'isOutsideZone'.tr,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: record.isWithinZone == true
+                                                ? const Color(0xFF0284C7)
+                                                : const Color(0xFF6B7280),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
                               ],
                             ),
-                          ],
-                          // Message
-                          if (record.message != null &&
-                              record.message!.isNotEmpty) ...[
-                            const SizedBox(height: 10),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
+                            // Coordinates
+                            if (record.targetLat != null &&
+                                record.targetLon != null) ...[
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_rounded,
+                                    size: 14,
+                                    color: colors.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      "${'coordinates'.tr}: ${record.targetLat!.toStringAsFixed(6)}, ${record.targetLon!.toStringAsFixed(6)}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: colors.onSurfaceVariant,
+                                        fontFamily: 'monospace',
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              decoration: BoxDecoration(
-                                color: colors.surfaceContainerHighest.withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                record.message!,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: colors.onSurfaceVariant,
-                                  fontStyle: FontStyle.italic,
+                            ],
+                            // Message
+                            if (record.message != null &&
+                                record.message!.isNotEmpty) ...[
+                              const SizedBox(height: 10),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colors.surfaceContainerHighest
+                                      .withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  record.message!,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: colors.onSurfaceVariant,
+                                    fontStyle: FontStyle.italic,
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ),
                   ),

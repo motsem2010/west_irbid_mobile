@@ -439,4 +439,6 @@ const Map<String, String> en = {
   'success': 'Success',
   'failed': 'Failed',
   'coordinates': 'Coordinates',
+  'getCheckinCheckoutRecords': 'Checkin Checkout Records',
+  'getCheckinCheckoutRecordsDesc': 'View checkin checkout records',
 };
